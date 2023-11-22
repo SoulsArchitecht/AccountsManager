@@ -1,0 +1,36 @@
+server:
+  port: 8088
+
+spring:
+  profiles:
+    active: dev, prod
+    default: dev
+
+
+  liquibase:
+    enabled: false
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/account_manager?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;connectionCollation=utf8_general_ci&amp;characterSetResults=UTF-8
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    #    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
+    #      dialect: org.hibernate.dialect.PostgreSQL9Dialect
+    #      show_sql: true
+    properties:
+      hibernate:
+        show_sql: false
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        temp:
+          use_jdbc_metadata_defaults: false
+        jdbc:
+          lob: non_contextual_creation=true
+#      generate-ddl: false
+#      show-sql: true
+#      open-in-view: false
