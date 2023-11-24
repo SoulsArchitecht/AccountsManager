@@ -1,6 +1,7 @@
 package ru.sshibko.AccountsManager.service;
 
 import jakarta.persistence.AttributeConverter;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -9,6 +10,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.util.Base64;
 
+@Service
 public class AttributeEncryptor implements AttributeConverter<String, String> {
 
     private static final String AES = "AES";

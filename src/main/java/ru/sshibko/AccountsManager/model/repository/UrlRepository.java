@@ -1,8 +1,8 @@
-package ru.sshibko.AccountsManager.service.model.repository;
+package ru.sshibko.AccountsManager.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.sshibko.AccountsManager.service.model.entity.Url;
+import ru.sshibko.AccountsManager.model.entity.Url;
 
 @Repository
 public interface UrlRepository extends JpaRepository<Url, Long> {
