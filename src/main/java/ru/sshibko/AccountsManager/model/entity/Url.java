@@ -6,14 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.sshibko.AccountsManager.service.AttributeEncryptor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "url")
+@Table(name = "urls")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Url {
+public class Url implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,25 +35,30 @@ public class Url {
     private LocalDateTime changeAt;
 
     @Column(name = "login", nullable = true)
-    @Convert(converter = AttributeEncryptor.class)
+    //@Convert(converter = AttributeEncryptor.class)
     private String login;
 
     @Column(name = "password", nullable = false)
-    @Convert(converter = AttributeEncryptor.class)
+    //@Convert(converter = AttributeEncryptor.class)
     private String password;
 
     @Column(name = "email", nullable = false)
-    @Convert(converter = AttributeEncryptor.class)
+    //@Convert(converter = AttributeEncryptor.class)
     private String email;
 
-    @Column(name = "email_another", nullable = true)
-    @Convert(converter = AttributeEncryptor.class)
+    @Column(name = "another_email", nullable = true)
+    //@Convert(converter = AttributeEncryptor.class)
     private String emailAnother;
 
     @Column(name = "nickname", nullable = true)
-    @Convert(converter = AttributeEncryptor.class)
+    //@Convert(converter = AttributeEncryptor.class)
     private String nickName;
 
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    //@Column(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
