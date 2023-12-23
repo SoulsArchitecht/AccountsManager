@@ -13,7 +13,7 @@ class UrlList extends Component {
             <div>
                 <h2 className="text-center">Urls List</h2>
                 <div className="row">
-                    <table classname="table table-striped table-bordered">
+                    <table classname="table table-bordered border-primary">
                         <thead>
                             <tr>
                                 <th>link</th>
