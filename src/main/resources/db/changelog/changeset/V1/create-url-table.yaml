@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 01create-url-table
+      id: 03-create-url-table
       author: Sergey Shibko
       changes:
         - createTable:
-            tableName: url
+            tableName: urls
             columns:
               - column:
                   name: id
@@ -60,5 +60,10 @@ databaseChangeLog:
               - column:
                   name: active
                   type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
                   constraints:
                     nullable: false
