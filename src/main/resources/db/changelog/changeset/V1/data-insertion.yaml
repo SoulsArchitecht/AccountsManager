@@ -1,0 +1,216 @@
+databaseChangeLog:
+  - changeSet:
+      id: 09-insert-tables-data
+      author: Sergey Sh
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: ADMIN
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: USER
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: email
+                  value: admin@gmail.com
+              - column:
+                  name: login
+                  value: admin
+              - column:
+                  name: password
+                  value: admin
+              - column:
+                  name: status
+                  value: true
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: email
+                  value: user@gmail.com
+              - column:
+                  name: login
+                  value: user
+              - column:
+                  name: password
+                  value: user
+              - column:
+                  name: status
+                  value: true
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: email
+                  value: user2@gmail.com
+              - column:
+                  name: login
+                  value: user2
+              - column:
+                  name: password
+                  value: user
+              - column:
+                  name: status
+                  value: false
+        - insert:
+            tableName: urls
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: link
+                  value: http:mail.ru
+              - column:
+                  name: description
+                  value: none
+              - column:
+                  name: created_at
+                  value: 2023-12-24 18:24:05
+              - column:
+                  name: changed_at
+                  value: 2023-12-24 18:24:05
+              - column:
+                  name: login
+                  value: user
+              - column:
+                  name: password
+                  value: user
+              - column:
+                  name: email
+                  value: emailusers
+              - column:
+                  name: nickname
+                  value: first
+              - column:
+                  name: active
+                  value: true
+              - column:
+                  name: user_id
+                  value: 1
+        - insert:
+            tableName: urls
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: link
+                  value: http:2mail.ru
+              - column:
+                  name: description
+                  value: none2
+              - column:
+                  name: created_at
+                  value: 2023-12-22 18:24:05
+              - column:
+                  name: changed_at
+                  value: 2023-12-22 18:24:05
+              - column:
+                  name: login
+                  value: user2
+              - column:
+                  name: password
+                  value: user2
+              - column:
+                  name: email
+                  value: emailusers2
+              - column:
+                  name: nickname
+                  value: second
+              - column:
+                  name: active
+                  value: true
+              - column:
+                  name: user_id
+                  value: 2
+        - insert:
+            tableName: urls
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: link
+                  value: http:3mail.ru
+              - column:
+                  name: description
+                  value: none3
+              - column:
+                  name: created_at
+                  value: 2023-12-21 18:24:05
+              - column:
+                  name: changed_at
+                  value: 2023-12-21 18:24:05
+              - column:
+                  name: login
+                  value: user3
+              - column:
+                  name: password
+                  value: user3
+              - column:
+                  name: email
+                  value: emailusers3
+              - column:
+                  name: another_email
+                  value: another
+              - column:
+                  name: nickname
+                  value: third
+              - column:
+                  name: active
+                  value: false
+              - column:
+                  name: user_id
+                  value: 3
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 2
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: role_id
+                  value: 2
+
