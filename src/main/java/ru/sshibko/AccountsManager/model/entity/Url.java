@@ -1,5 +1,6 @@
 package ru.sshibko.AccountsManager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,5 +61,6 @@ public class Url implements Serializable {
     //@Column(name = "user_id")
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 }
