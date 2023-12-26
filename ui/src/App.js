@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import UrlList from './components/UrlList';
+import AccountList from './components/AccountList';
 
 function App() {
   return (
     <div className="container-xxl">
-      <UrlList/>
+      <AccountList/>
     </div>
   );
 }
