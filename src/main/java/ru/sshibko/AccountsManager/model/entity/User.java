@@ -34,7 +34,7 @@ public class User implements Serializable {
     private boolean status;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Url> urlList;
+    private List<Account> accountList;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),

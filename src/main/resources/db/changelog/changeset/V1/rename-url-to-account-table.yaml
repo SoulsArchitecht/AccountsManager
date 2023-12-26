@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10-rename-url-to-account-table
+      author: Sergey Sh
+      changes:
+        - renameTable:
+            catalogName: accounts_manager
+            newTableName: accounts
+            oldTableName: urls
+            schemaName: public

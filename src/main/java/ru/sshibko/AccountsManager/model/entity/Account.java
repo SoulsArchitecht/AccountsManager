@@ -5,17 +5,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.sshibko.AccountsManager.service.AttributeEncryptor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "urls")
+@Table(name = "accounts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Url implements Serializable {
+public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

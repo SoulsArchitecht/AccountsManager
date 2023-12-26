@@ -3,7 +3,7 @@ package ru.sshibko.AccountsManager.dto;
 import ru.sshibko.AccountsManager.model.entity.User;
 import java.time.LocalDateTime;
 
-public record UrlDto(
+public record AccountDto(
         Long id,
         String link,
         String description,
