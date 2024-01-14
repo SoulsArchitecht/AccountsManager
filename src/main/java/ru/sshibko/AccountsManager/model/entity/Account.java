@@ -1,10 +1,14 @@
 package ru.sshibko.AccountsManager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,6 +24,7 @@ public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
     @Column(name = "link", nullable = false)
@@ -28,11 +33,13 @@ public class Account implements Serializable {
     @Column(name = "description", nullable = true)
     private String description;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "changed_at", nullable = false)
-    private LocalDateTime changeAt;
+    private LocalDateTime changedAt;
 
     @Column(name = "login", nullable = true)
     //@Convert(converter = AttributeEncryptor.class)
@@ -55,11 +62,13 @@ public class Account implements Serializable {
     private String nickName;
 
     @Column(name = "active", nullable = false)
-    private boolean active;
+    private boolean active = true;
 
-    //@Column(name = "user_id")
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    //@JsonIgnore
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     private User user;
 }

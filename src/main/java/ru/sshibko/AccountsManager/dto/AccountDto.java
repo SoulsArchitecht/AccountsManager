@@ -1,20 +1,25 @@
 package ru.sshibko.AccountsManager.dto;
 
-import ru.sshibko.AccountsManager.model.entity.User;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-public record AccountDto(
-        Long id,
-        String link,
-        String description,
-        LocalDateTime createdAt,
-        LocalDateTime changedAt,
-        String login,
-        String password,
-        String email,
-        String emailAnother,
-        String nickname,
-        boolean active,
-        User user
-) {
+import java.time.LocalDateTime;
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class AccountDto {
+
+        private Long id;
+        private String link;
+        private String description;
+        private LocalDateTime createdAt;
+        private LocalDateTime changedAt;
+        private String login;
+        private String password;
+        private String email;
+        private String emailAnother;
+        private String nickName;
+        private boolean active;
+        private Long userId;
 }

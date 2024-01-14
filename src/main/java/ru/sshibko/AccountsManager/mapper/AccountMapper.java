@@ -3,39 +3,48 @@ package ru.sshibko.AccountsManager.mapper;
 import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.model.entity.Account;
 
-public class AccountMapper {
+import java.io.Serializable;
+
+public class AccountMapper implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static AccountDto mapToAccountDto(Account account) {
-        return new AccountDto(
-                account.getId(),
-                account.getLink(),
-                account.getDescription(),
-                account.getCreatedAt(),
-                account.getChangeAt(),
-                account.getLogin(),
-                account.getEmail(),
-                account.getEmailAnother(),
-                account.getNickName(),
-                account.getPassword(),
-                account.isActive(),
-                account.getUser()
-        );
+        AccountDto accountDto = new AccountDto();
+
+        accountDto.setId(account.getId());
+        accountDto.setLink(account.getLink());
+        accountDto.setDescription(account.getDescription());
+        accountDto.setCreatedAt(account.getCreatedAt());
+        accountDto.setChangedAt(account.getChangedAt());
+        accountDto.setLogin(account.getLogin());
+        accountDto.setEmail(account.getEmail());
+        accountDto.setEmailAnother(accountDto.getEmailAnother());
+        accountDto.setNickName(account.getNickName());
+        accountDto.setPassword(account.getPassword());
+        accountDto.setActive(account.isActive());
+        accountDto.setUserId(account.getUser().getId());
+
+        return accountDto;
     }
 
     public static Account mapToAccount(AccountDto accountDto) {
-        return new Account(
-                accountDto.id(),
-                accountDto.link(),
-                accountDto.description(),
-                accountDto.createdAt(),
-                accountDto.changedAt(),
-                accountDto.login(),
-                accountDto.email(),
-                accountDto.emailAnother(),
-                accountDto.nickname(),
-                accountDto.password(),
-                accountDto.active(),
-                accountDto.user()
-        );
+        Account account = new Account();
+
+        account.setId(account.getId());
+        account.setLink(accountDto.getLink());
+        account.setDescription(accountDto.getDescription());
+        account.setCreatedAt(accountDto.getCreatedAt());
+        account.setChangedAt(accountDto.getChangedAt());
+        account.setLogin(accountDto.getLogin());
+        account.setEmail(accountDto.getEmail());
+        account.setEmailAnother(accountDto.getEmailAnother());
+        account.setNickName(accountDto.getNickName());
+        account.setPassword(accountDto.getPassword());
+        account.setActive(accountDto.isActive());
+
+        return account;
     }
+
+
 }
