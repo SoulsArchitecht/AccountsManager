@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {accountList} from '../../services/AccountService';
+import {useNavigate} from 'react-router-dom'
 
 const AccountList = () => {
 
     const [accounts, setAccounts] = useState([]);
+
+    const navigator = useNavigate();
 
     useEffect(() => {
         accountList().then((response) => {
@@ -13,10 +16,15 @@ const AccountList = () => {
         })
     }, [])
 
+    function addNewAccount() {
+        navigator('/add-account');
+    }
+
   return (
     <div className='container'>
-        <h2 className="text-center">Accounts List</h2>
+        <h2 className="text-center mt-2">Accounts List</h2>
             <br></br>
+            <button className='btn btn-primary mb-2' onClick={addNewAccount}>Add</button>
             <table className="table table-dark table-striped table-bordered">
                 <thead>
                     <tr>
@@ -30,7 +38,6 @@ const AccountList = () => {
                         <th>emailAnother</th>
                         <th>nickname</th>
                         <th>active</th>
-                        <th>actions</th>
                     </tr>    
                 </thead>
 
@@ -47,9 +54,8 @@ const AccountList = () => {
                                 <td>{account.password}</td>
                                 <td>{account.email}</td>
                                 <td>{account.emailAnother}</td>
-                                <td>{account.nickname}</td>
+                                <td>{account.nickName}</td>
                                 <td>{account.active}</td>
-                                <td></td>
 
                             </tr>
                         )

@@ -4,6 +4,7 @@ import AccountList from './components/accountList/AccountList';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import AddAccount from './components/addAccount/AddAccount';
 
 function App() {
   return (
@@ -11,10 +12,10 @@ function App() {
       <BrowserRouter>
         <Header/>
           <Routes>
-            <Route path='api/v1/' element = {<AccountList/>}></Route>
-            <Route path='api/v1/accounts' element = {<AccountList/>}></Route>
+            <Route path='/' element = {<AccountList/>}></Route>
+            <Route path='/accounts' element = {<AccountList/>}></Route>
+            <Route path='/add-account' element = {<AddAccount/>}></Route>
           </Routes>
-        <AccountList/>
         <Footer/>
       </BrowserRouter>
     </div>
