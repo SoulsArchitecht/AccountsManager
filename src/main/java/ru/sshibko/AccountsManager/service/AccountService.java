@@ -1,12 +1,13 @@
 package ru.sshibko.AccountsManager.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.exception.ResourceNotFoundException;
 import ru.sshibko.AccountsManager.mapper.AccountMapper;
-import ru.sshibko.AccountsManager.mapper.UserMapper;
 import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.model.entity.User;
 import ru.sshibko.AccountsManager.model.repository.AccountRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class AccountService implements CRUDService<AccountDto>{
 
     private final AccountRepository accountRepository;
@@ -42,7 +44,7 @@ public class AccountService implements CRUDService<AccountDto>{
     }
 
     @Override
-    public void create(AccountDto accountDto) {
+    public void create(@Valid AccountDto accountDto) {
         log.info("Create new account");
         Account account = AccountMapper.mapToAccount(accountDto);
         Long userId = accountDto.getUserId();
@@ -52,7 +54,7 @@ public class AccountService implements CRUDService<AccountDto>{
     }
 
     @Override
-    public void update(AccountDto accountDto) {
+    public void update(@Valid AccountDto accountDto) {
         log.info("Update account");
         Account account = AccountMapper.mapToAccount(accountDto);
         Long userId = accountDto.getUserId();

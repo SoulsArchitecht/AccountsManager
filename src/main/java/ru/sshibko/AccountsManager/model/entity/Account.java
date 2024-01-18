@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Account implements Serializable {
     @Column(name = "id", nullable = false, unique = true)
     private long id;
 
+    @NotBlank
     @Column(name = "link", nullable = false)
     private String link;
 
@@ -41,14 +43,17 @@ public class Account implements Serializable {
     @Column(name = "changed_at", nullable = false)
     private LocalDateTime changedAt;
 
+    @NotBlank
     @Column(name = "login", nullable = true)
     //@Convert(converter = AttributeEncryptor.class)
     private String login;
 
+    @NotBlank
     @Column(name = "password", nullable = false)
     //@Convert(converter = AttributeEncryptor.class)
     private String password;
 
+    @NotBlank
     @Column(name = "email", nullable = false)
     //@Convert(converter = AttributeEncryptor.class)
     private String email;
