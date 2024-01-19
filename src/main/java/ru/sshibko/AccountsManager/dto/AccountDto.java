@@ -44,11 +44,11 @@ public class AccountDto implements Serializable {
         @Size(max = 128)
         private String email;
 
-        @Pattern(regexp = Const.REGEX_EMAIL, message = "invalid email")
+        //@Pattern(regexp = Const.REGEX_EMAIL, message = "invalid email")
         @Size(max = 128)
         private String emailAnother;
 
-        @Size(min = 2, max = 64)
+        @Size(max = 64)
         private String nickName;
 
         private boolean active;
