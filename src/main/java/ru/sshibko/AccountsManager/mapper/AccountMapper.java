@@ -19,7 +19,7 @@ public class AccountMapper implements Serializable {
         accountDto.setChangedAt(account.getChangedAt());
         accountDto.setLogin(account.getLogin());
         accountDto.setEmail(account.getEmail());
-        accountDto.setEmailAnother(accountDto.getEmailAnother());
+        accountDto.setEmailAnother(account.getEmailAnother());
         accountDto.setNickName(account.getNickName());
         accountDto.setPassword(account.getPassword());
         accountDto.setActive(account.isActive());
@@ -31,7 +31,7 @@ public class AccountMapper implements Serializable {
     public static Account mapToAccount(AccountDto accountDto) {
         Account account = new Account();
 
-        account.setId(account.getId());
+        account.setId(accountDto.getId());
         account.setLink(accountDto.getLink());
         account.setDescription(accountDto.getDescription());
         account.setCreatedAt(accountDto.getCreatedAt());
@@ -42,6 +42,13 @@ public class AccountMapper implements Serializable {
         account.setNickName(accountDto.getNickName());
         account.setPassword(accountDto.getPassword());
         account.setActive(accountDto.isActive());
+
+        return account;
+    }
+
+    public static Account mapToAccount(Long id, AccountDto accountDto) {
+        Account account = mapToAccount(accountDto);
+        account.setId(id);
 
         return account;
     }

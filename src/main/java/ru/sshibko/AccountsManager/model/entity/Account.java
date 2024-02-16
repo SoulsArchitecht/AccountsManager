@@ -25,7 +25,7 @@ public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true)
     private long id;
 
     @NotBlank
@@ -36,11 +36,11 @@ public class Account implements Serializable {
     private String description;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = true)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "changed_at", nullable = false)
+    @Column(name = "changed_at", nullable = true)
     private LocalDateTime changedAt;
 
     @NotBlank

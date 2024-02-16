@@ -1,6 +1,8 @@
 package ru.sshibko.AccountsManager.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.service.AccountService;
@@ -15,33 +17,37 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @ResponseBody
     @GetMapping("/{id}")
-    public AccountDto getAccountById(@PathVariable Long id) {
-        return accountService.getById(id);
+    public ResponseEntity<AccountDto> getAccountById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(
+                accountService.getById(id)
+        );
     }
 
-    @ResponseBody
     @GetMapping
-    public Collection<AccountDto> getAllAccounts() {
-        return accountService.getAll();
+    public ResponseEntity<Collection<AccountDto>> getAllAccounts() {
+        return ResponseEntity.ok(
+                accountService.getAll()
+        );
     }
 
-    @ResponseBody
     @PostMapping
-    public void createAccount(@RequestBody AccountDto accountDto) {
-        accountService.create(accountDto);
+    public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
+        AccountDto newAccount = accountService.create(accountDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(newAccount);
+        // return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
-    @ResponseBody
     @PutMapping("/{id}")
-    public void updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
-        //TODO Long id delete?
-        accountService.update(accountDto);
+    public ResponseEntity<AccountDto> updateAccount(@PathVariable("id") Long id, @RequestBody AccountDto updatedAccountDto) {
+        AccountDto accountDto = accountService.update(id, updatedAccountDto);
+        return ResponseEntity.ok(accountDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAccount(@PathVariable Long id) {
-        accountService.delete(id);
+    public ResponseEntity<String> deleteAccount(@PathVariable("id") Long accountId) {
+        accountService.delete(accountId);
+        return ResponseEntity.ok("Account with id " + accountId + "deleted successfully!");
     }
 }

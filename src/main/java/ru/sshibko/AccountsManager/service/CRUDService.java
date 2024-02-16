@@ -8,8 +8,8 @@ public interface CRUDService<T> {
 
     T getById(Long id);
     Collection<T> getAll();
-    void create(@Valid T item);
-    void update(@Valid T item);
+    T create(@Valid T item);
+    T update(@Valid Long id, T item);
     void delete(Long id);
 
 }
