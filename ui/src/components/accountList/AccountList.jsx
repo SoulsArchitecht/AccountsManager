@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {accountList} from '../../services/AccountService';
 import {useNavigate} from 'react-router-dom'
+import { deleteAccount } from '../../services/AccountService';
 
 const AccountList = () => {
 
@@ -9,15 +10,31 @@ const AccountList = () => {
     const navigator = useNavigate();
 
     useEffect(() => {
+        getAllAccounts();
+    }, [])
+
+    function getAllAccounts() {
         accountList().then((response) => {
             setAccounts(response.data);
         }).catch(error => {
             console.error(error);
         })
-    }, [])
+    }
 
     function addNewAccount() {
         navigator('/add-account');
+    }
+
+    function updateAccount(id) {
+        navigator(`/edit-account/${id}`);
+    }
+
+    function removeAccount(id) {
+        deleteAccount(id).then((response) => {
+            getAllAccounts(response.data);
+        }).catch(error => {
+            console.error(error);
+        })
     }
 
   return (
@@ -38,6 +55,7 @@ const AccountList = () => {
                         <th>emailAnother</th>
                         <th>nickname</th>
                         <th>active</th>
+                        <th>Actions</th>
                     </tr>    
                 </thead>
 
@@ -56,6 +74,10 @@ const AccountList = () => {
                                 <td>{account.emailAnother}</td>
                                 <td>{account.nickName}</td>
                                 <td>{account.active}</td>
+                                <td>
+                                    <button className='btn btn-info' onClick={() => updateAccount(account.id)}>Update</button>
+                                    <button className='btn btn-danger' onClick={() => removeAccount(account.id)}>Delete</button>
+                                </td>
 
                             </tr>
                         )

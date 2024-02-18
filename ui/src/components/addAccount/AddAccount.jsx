@@ -1,12 +1,16 @@
-import React, {useState} from 'react';
-import {createAccount} from '../../services/AccountService';
-import {useNavigate} from 'react-router-dom';
-//import { v4 as uuidv4 } from 'uuid';
+import React, {useState, useEffect} from 'react';
+import {createAccount, getAccount, updateAccount} from '../../services/AccountService';
+import {useNavigate, useParams} from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import * as Const from '../../common/Const';
 
 const AddAccount = () => {
 
-    const [id, setId] = useState('');
+    console.log((uuidv4()));
+
+    const {id} = useParams();
+    //const [id, setId] = useState(id);
+    const {setId} = useState('');
     const [link, setLink] = useState('');
     const [description, setDescription] = useState('');
     const [login, setLogin] = useState('');
@@ -14,7 +18,11 @@ const AddAccount = () => {
     const [email, setEmail] = useState('');
     const [emailAnother, setEmailAnother] = useState('');
     const [nickName, setNickName] = useState('');
+    const [active, setActive] = useState(true);
     const [userId, setUserId] = useState(2);
+
+    //const {id} = useParams();
+    console.log(id);
 
     const [errors, setErrors] = useState({
         link: '',
@@ -30,16 +38,49 @@ const AddAccount = () => {
         return (!str || str.length === 0 );
     }
 
-    function saveAccount(e) {
+    useEffect(() => {
+
+        if (id) {
+            getAccount(id).then((response) => {
+                //setId(response.data.id);
+                setLink(response.data.link);
+                setLogin(response.data.login);
+                setPassword(response.data.password);
+                setEmail(response.data.email);
+                setEmailAnother(response.data.emailAnother);
+                setNickName(response.data.nickName);
+                //setAccountId(response.data.id);
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+
+    }, [id]);
+
+    function saveOrUpdateAccount(e) {
         e.preventDefault();
 
         if (validateForm()) {
-            const account = {id, link, description, login, password, email, emailAnother, nickName, userId};
-            createAccount(account).then((response) => {
-                //setId(uuidv4());
-                console.log(response.data);
-                navigator('/accounts');
-            })
+            const account = {id, link, description, login, password, email, emailAnother, nickName, active, userId};
+            console.log(account);
+
+            if (id) {
+                updateAccount(id, account).then((response) => {
+                    //setId(accountId);
+                    console.log(response.data);
+                    navigator('/accounts');
+                }).catch(error => {
+                    console.error(error);
+                })
+            } else {
+                createAccount(account).then((response) => {
+                    //setId(uuidv4());
+                    console.log(response.data);
+                    navigator('/accounts');
+                }).catch(error => {
+                    console.log(error);
+                })
+            }            
         }
     }
 
@@ -90,12 +131,22 @@ const AddAccount = () => {
         return valid;
     }
 
+    function pageTitle() {
+        if(id) {
+            return <h2 className='text-center'>Update account</h2>;
+        } else {
+            return <h2 className='text-center'>Add account</h2>
+        }
+    }
+
   return (
     <div className='container'>
       <br/><br/>
       <div className='row'>
         <div className='card col-md-6 offset-md-3'>
-            <h2 className='text-center'>Add account</h2>
+            {
+                pageTitle()
+            }
             <div className='card-body'>
                 <form>
 
@@ -196,7 +247,7 @@ const AddAccount = () => {
                     </div>
                     
 
-                    <button className='btn btn-success' onClick={saveAccount}>Submit</button>
+                    <button className='btn btn-success' onClick={saveOrUpdateAccount}>Submit</button>
                     <button className='btn btn-danger pr-2'>Clear</button>
                 </form>
             </div>

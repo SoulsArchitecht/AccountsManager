@@ -15,6 +15,7 @@ function App() {
             <Route path='/' element = {<AccountList/>}></Route>
             <Route path='/accounts' element = {<AccountList/>}></Route>
             <Route path='/add-account' element = {<AddAccount/>}></Route>
+            <Route path='/edit-account/:id' element = {<AddAccount/>}></Route>
           </Routes>
         <Footer/>
       </BrowserRouter>
