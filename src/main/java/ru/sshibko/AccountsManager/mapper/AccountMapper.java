@@ -31,7 +31,7 @@ public class AccountMapper implements Serializable {
     public static Account mapToAccount(AccountDto accountDto) {
         Account account = new Account();
 
-        account.setId(accountDto.getId());
+        account.setId(account.getId());
         account.setLink(accountDto.getLink());
         account.setDescription(accountDto.getDescription());
         account.setCreatedAt(accountDto.getCreatedAt());
