@@ -50,4 +50,11 @@ public class AccountController {
         accountService.delete(accountId);
         return ResponseEntity.ok("Account with id " + accountId + "deleted successfully!");
     }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<Collection<AccountDto>> getByKeyword(@PathVariable("keyword") String keyword) {
+        return ResponseEntity.ok(
+                accountService.findByKeyword(keyword)
+        );
+    }
 }

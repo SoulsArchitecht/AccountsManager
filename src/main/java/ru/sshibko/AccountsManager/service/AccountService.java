@@ -107,4 +107,11 @@ public class AccountService implements CRUDService<AccountDto>{
         accountRepository.deleteById(accountId);
         log.info("Account with ID " + accountId + "deleted successfully!");
     }
+
+    public Collection<AccountDto> findByKeyword(String keyword) {
+        log.info("Finding accounts by keyword " + keyword);
+        List<Account> accountList = accountRepository.findByKeyword(keyword);
+        return accountList.stream().map(AccountMapper::mapToAccountDto)
+                .toList();
+    }
 }
