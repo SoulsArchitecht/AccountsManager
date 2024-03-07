@@ -11,3 +11,5 @@ export const getAccount = (accountId) => axios.get(ACCOUNT_REST_API_BASE_URL + '
 export const updateAccount = (accountId, account) => axios.put(ACCOUNT_REST_API_BASE_URL + '/' + accountId, account);
 
 export const deleteAccount = (accountId) => axios.delete(ACCOUNT_REST_API_BASE_URL + '/' + accountId);
+
+export const findByKeyword = (keyword) => axios.get(ACCOUNT_REST_API_BASE_URL + '/search/' + keyword);

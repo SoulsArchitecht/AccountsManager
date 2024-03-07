@@ -17,6 +17,16 @@ const Header = () => {
                   Add new 
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to={"/accounts/search"} className="nav-link">
+                  Search 
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={"/"} className="nav-link">
+                  Home
+                </Link>
+              </li>
             </div>
         </nav>
     </div>
