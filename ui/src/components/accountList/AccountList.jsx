@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {accountList} from '../../services/AccountService';
 import {useNavigate} from 'react-router-dom'
 import { deleteAccount } from '../../services/AccountService';
+import moment from 'moment';
+
 
 const AccountList = () => {
 
@@ -37,6 +39,10 @@ const AccountList = () => {
         })
     }
 
+    function formatDate(date) {
+        return moment(date).format("DD MMM YYYY");
+    }
+
   return (
     <div className='container'>
         <h2 className="text-center mt-2">Accounts List</h2>
@@ -66,8 +72,8 @@ const AccountList = () => {
                             <tr key={account.id}>
                                 <td>{account.link}</td>
                                 <td>{account.description}</td>
-                                <td>{account.createdAt}</td>
-                                <td>{account.changedAt}</td>
+                                <td>{formatDate(account.createdAt)}</td>
+                                <td>{formatDate(account.changedAt)}</td>
                                 <td>{account.login}</td>
                                 <td>{account.password}</td>
                                 <td>{account.email}</td>
