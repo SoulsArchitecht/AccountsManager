@@ -3,6 +3,9 @@ package ru.sshibko.AccountsManager.service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.sshibko.AccountsManager.dto.AccountDto;
@@ -13,8 +16,8 @@ import ru.sshibko.AccountsManager.model.entity.User;
 import ru.sshibko.AccountsManager.model.repository.AccountRepository;
 import ru.sshibko.AccountsManager.model.repository.UserRepository;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,42 @@ public class AccountService implements CRUDService<AccountDto>{
         return accountList.stream().map(AccountMapper::mapToAccountDto)
                 .toList();
     }
+
+/*    public Map<String, Object> getAllAccountsPageable(String keyword, int page, int size) {
+        List<Account> accountList = new ArrayList<>();
+        Pageable pagination = PageRequest.of(page, size);
+        Page<Account> accountPage;
+        if (keyword == null) {
+            accountPage = accountRepository.findAll(pagination);
+        } else {
+            accountPage = (Page<Account>) accountRepository.findByKeyword(keyword);
+        }
+        accountList = accountPage.getContent();
+
+        Map<String, Object> response =
+                new HashMap<String, Object>();
+        response.put("accounts", accountList);
+        response.put("totalPages", accountPage.getTotalPages());
+
+        return response;
+    }*/
+
+//    public List<AccountDto> findAllPaged(PageRequest pageRequest) {
+//        List<Account> accountList = accountRepository.findAllByPageRequest(pageRequest);
+//        return accountList.stream().map(AccountMapper::mapToAccountDto)
+//                .toList();
+//    }
+
+    public Page<Account> findAllAccountsPaged(String keyword, PageRequest pageRequest) {
+        Page<Account> accountPage;
+        if (keyword == null) {
+            accountPage = accountRepository.findAll(pageRequest);
+        } else {
+            accountPage = accountRepository.findByKeywordPaged(keyword, pageRequest);
+        }
+        return accountPage;
+    }
+
 
     @Override
     public AccountDto create(@Valid AccountDto accountDto) {
