@@ -1,26 +1,91 @@
-import React, {useState, useEffect} from 'react';
-import {accountList} from '../../services/AccountService';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
+import {getAllAccounts} from '../../services/AccountService';
 import {useNavigate} from 'react-router-dom'
-import { deleteAccount } from '../../services/AccountService';
-import moment from 'moment';
+import { deleteAccount, findByKeyword } from '../../services/AccountService';
+import {format} from 'date-fns';
+import { useTable } from 'react-table';
+import Pagination from '@material-ui/lab/Pagination';
+//import history from 'history';
+//import { Typography } from '@material-ui/core';
 
 
-const AccountList = () => {
+const AccountList = (props) => {
 
     const [accounts, setAccounts] = useState([]);
+    const [keyword, setKeyword] = useState("");
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const accountsRef = useRef();
+
+    const pageSizes = [10, 20, 40];
+    accountsRef.current = accounts;
+    
 
     const navigator = useNavigate();
 
-    useEffect(() => {
-        getAllAccounts();
-    }, [])
+    const onChangeSearchKeyword = (e) => {
+        const keyword = e.target.value;
+        setKeyword(keyword);
+    }
 
-    function getAllAccounts() {
-        accountList().then((response) => {
+    const getByKeyword = () => {
+        findByKeyword(keyword)
+          .then(response => {
             setAccounts(response.data);
-        }).catch(error => {
-            console.error(error);
-        })
+            console.log(response.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      };
+
+    const getRequestParams = (keyword, page, pageSize) => {
+        let params = {};
+
+        if (keyword) {
+            params["keyword"] = keyword;
+        }
+
+        if (page) {
+            params["page"] = page - 1;
+        }
+
+        if (pageSize) {
+            params["size"] = pageSize;
+        }
+
+        return params;
+    }
+
+    // useEffect(() => {
+    //     getAllAccounts();
+    // }, [])
+
+    // function getAllAccounts() {
+    //     accountList().then((response) => {
+    //         setAccounts(response.data);
+    //     }).catch(error => {
+    //         console.error(error);
+    //     })
+    // }
+
+    const retrieveAccounts = () => {
+        const params = getRequestParams(keyword, page, pageSize);
+
+        getAllAccounts(params)
+            .then((response) => {
+                //const {accounts, totalPages} = response.data;
+                const accounts = response.data.data;
+                const totalPages = response.data.total;
+
+                setAccounts(accounts);
+                setCount(totalPages);
+                console.log(response.data);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
     }
 
     function addNewAccount() {
@@ -31,65 +96,263 @@ const AccountList = () => {
         navigator(`/edit-account/${id}`);
     }
 
-    function removeAccount(id) {
-        deleteAccount(id).then((response) => {
-            getAllAccounts(response.data);
-        }).catch(error => {
-            console.error(error);
-        })
-    }
+    // function formattedDate(date) {
+    //     return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(date);
+    // }    
 
     function formatDate(date) {
-        return moment(date).format("DD MMM YYYY");
+        return format(date, 'dd.MM.yyyy');
+    }
+    // function removeAccount(id) {
+    //     deleteAccount(id).then((response) => {
+    //         getAllAccounts(response.data);
+    //     }).catch(error => {
+    //         console.error(error);
+    //     })
+    // }
+
+    //  function formatDate(date) {
+    //      return moment(date).format("DD MMM YYYY");
+    //  }
+
+    // function formatDate(date) {
+    //     return new Date(date).toLocaleDateString("en-US");
+    // }
+
+    useEffect(retrieveAccounts, [keyword, page, pageSize]);
+
+    const findByKeyword = () => {
+        setPage(1);
+        retrieveAccounts();
     }
 
+    const removeAccount = (rowIndex) => {
+        const id = accountsRef.current[rowIndex].id;
+
+        deleteAccount(id)
+            .then((response) => {
+                //history.push("/accounts");
+
+                let newAccounts = [...accountsRef.current];
+                newAccounts.splice(rowIndex, 1);
+
+                response.setAccounts(newAccounts);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+
+    }
+
+    const handlePageChange = (event, value) => {
+        setPage(value);
+    }
+
+    const handlePageSizeChange = (event) => {
+        setPageSize(event.target.value);
+        setPage(1);
+    }
+
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Link",
+                accessor: "link",
+            },
+            {
+                Header: "Description",
+                accessor: "description",
+            },
+            {
+                Header: "Created At",
+                accessor: "createdAt",
+                Cell: ({row}) => {
+                    //return <span>{row.original.createdAt}</span>;
+                    return <span>{formatDate(row.original.createdAt)}</span>
+                }
+            },
+            {
+                Header: "Changed At",
+                accessor: "changedAt",
+                Cell: ({ row }) => {
+                    return <span>{formatDate(row.original.changedAt)}</span>;
+                }
+            },
+            {
+                Header: "Login",
+                accessor: "login",
+            },
+            {
+                Header: "Password",
+                accessor: "password",
+            },
+            {
+                Header: "Email",
+                accessor: "email",
+            },
+            {
+                Header: "Email Another",
+                accessor: "emailAnother",
+            },
+            {
+                Header: "NickName",
+                accessor: "nickName",
+            },
+            {
+                Header: "Active",
+                accessor: "active",
+                Cell: ({ row }) => {
+                    if (row.original.active === true) {
+                        return "YES";
+                    } else {
+                        return "NO";
+                    }
+                }
+            },
+            {
+                Header: "Actions",
+                accessor: "actions",
+                Cell: (props) => {
+                    const rowIdx = props.row.id;
+                    return (
+                        <div>
+                            <span onClick = {() => updateAccount(rowIdx)}>
+                                <button type="button"
+                                className = "btn btn-warning btn-sm">Edit</button>
+                            </span>
+                            &nbsp;
+                            <span onClick = {() => removeAccount(rowIdx)}>
+                                <button type="button"
+                                className = "btn btn-danger btn-sm">Delete</button>
+                            </span>
+                        </div>
+                    );
+                },
+            },
+
+        ],
+        []
+    );
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+    } = useTable({
+        columns,
+        data: accounts,
+    });
+
   return (
-    <div className='container'>
-        <h2 className="text-center mt-2">Accounts List</h2>
-            <br></br>
-            <button className='btn btn-primary mb-2' onClick={addNewAccount}>Add</button>
-            <table className="table table-dark table-striped table-bordered">
+    <div className = "list row">
+        <br></br>
+
+        <div className = "col-md-8">
+            <div className = "input-group mb-3">
+                <input
+                type="text"
+                className="form-control"
+                placeholder="keyword"
+                value={keyword}
+                onChange={onChangeSearchKeyword}
+                />
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-outline-success"
+                        type="button"
+                        onClick={findByKeyword}
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div className = "col-md-12 list">
+            <div className = "mt-3">
+                {"Items per Page: "}
+                <select onChange={handlePageSizeChange} value = {pageSize}>
+                    {pageSizes.map((size) => (
+                        <option key = {size} value = {size}>
+                            {size}
+                        </option>
+                    ))}
+                </select>
+
+                <Pagination
+                    color = "primary"
+                    className = "my-3"
+                    count = {count}
+                    page = {page}
+                    siblingCount = {1}
+                    boundaryCount = {1}
+                    variant = "outlined"
+                    onChange = {handlePageChange}
+                />
+            </div>
+
+            <table
+                className = "table table-striped table-bordered"
+                {...getTableProps()}
+            >
+
                 <thead>
-                    <tr>
-                        <th>link</th>
-                        <th>description</th>
-                        <th>created at</th>
-                        <th>changed at</th>
-                        <th>login</th>
-                        <th>password</th>
-                        <th>email</th>
-                        <th>emailAnother</th>
-                        <th>nickname</th>
-                        <th>active</th>
-                        <th>Actions</th>
-                    </tr>    
+                    {headerGroups.map((headerGroup) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column) => (
+                                <th {...column.getHeaderProps()}>
+                                    {column.render("Header")}
+                                </th>
+                            ))}
+                        </tr>
+                    ))}
                 </thead>
 
-                <tbody>
-                    {
-                        accounts.map(
-                            account =>
-                            <tr key={account.id}>
-                                <td>{account.link}</td>
-                                <td>{account.description}</td>
-                                <td>{formatDate(account.createdAt)}</td>
-                                <td>{formatDate(account.changedAt)}</td>
-                                <td>{account.login}</td>
-                                <td>{account.password}</td>
-                                <td>{account.email}</td>
-                                <td>{account.emailAnother}</td>
-                                <td>{account.nickName}</td>
-                                <td>{account.active}</td>
-                                <td>
-                                    <button className='btn btn-info' onClick={() => updateAccount(account.id)}>Update</button>
-                                    <button className='btn btn-danger' onClick={() => removeAccount(account.id)}>Delete</button>
-                                </td>
-
+                <tbody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row);
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map((cell) => {
+                                    return (
+                                        <td {...cell.getCellProps()}>
+                                            {cell.render("Cell")}
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         )
-                    }
-                </tbody>    
-            </table>                     
+                    })}
+                </tbody>
+
+            </table>
+
+            <div className="mt-3">
+                {"Items per Page: "}
+                <select onChange={handlePageSizeChange} value={pageSize}>
+                    {pageSizes.map((size) => (
+                    <option key={size} value={size}>
+                        {size}
+                    </option>
+                    ))}
+                </select>
+
+                <Pagination
+                    color="primary"
+                    className="my-3"
+                    count={count}
+                    page={page}
+                    siblingCount={1}
+                    boundaryCount={1}
+                    variant="outlined"
+                    onChange={handlePageChange}
+                />
+            </div>    
+
+
+        </div>
     </div>
   )
 }
