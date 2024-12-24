@@ -1,6 +1,8 @@
 package ru.sshibko.AccountsManager.service;
 
 import jakarta.persistence.AttributeConverter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
@@ -11,18 +13,12 @@ import java.security.Key;
 import java.util.Base64;
 
 @Service
+@RequiredArgsConstructor
 public class AttributeEncryptor implements AttributeConverter<String, String> {
 
-    private static final String AES = "AES";
-    private static final String SECRET = "secret-key-12345";
-
+    @Autowired
     private final Key key;
     private final Cipher cipher;
-
-    public AttributeEncryptor(Key key, Cipher cipher) {
-        this.key = key;
-        this.cipher = cipher;
-    }
 
     @Override
     public String convertToDatabaseColumn(String attribute) {

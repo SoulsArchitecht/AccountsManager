@@ -1,16 +1,14 @@
 package ru.sshibko.AccountsManager.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UpdateTimestamp;
+import ru.sshibko.AccountsManager.service.AttributeEncryptor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -46,29 +44,29 @@ public class Account implements Serializable {
 
     @NotBlank
     @Column(name = "login", nullable = true)
-    //@Convert(converter = AttributeEncryptor.class)
+    @Convert(converter = AttributeEncryptor.class)
     private String login;
 
     @NotBlank
     @Column(name = "password", nullable = false)
-    //@Convert(converter = AttributeEncryptor.class)
+    @Convert(converter = AttributeEncryptor.class)
     private String password;
 
     @NotBlank
     @Column(name = "email", nullable = false)
-    //@Convert(converter = AttributeEncryptor.class)
+    @Convert(converter = AttributeEncryptor.class)
     private String email;
 
     @Column(name = "another_email", nullable = true)
-    //@Convert(converter = AttributeEncryptor.class)
+    @Convert(converter = AttributeEncryptor.class)
     private String emailAnother;
 
     @Column(name = "nickname", nullable = true)
-    //@Convert(converter = AttributeEncryptor.class)
+    @Convert(converter = AttributeEncryptor.class)
     private String nickName;
 
-    @Column(name = "active", nullable = false)
-    private boolean active = true;
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
