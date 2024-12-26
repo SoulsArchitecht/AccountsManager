@@ -10,14 +10,12 @@ import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.PagedDataDto;
 import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.service.AccountService;
-
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
