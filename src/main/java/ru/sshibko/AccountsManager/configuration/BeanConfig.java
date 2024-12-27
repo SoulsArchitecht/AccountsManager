@@ -1,5 +1,7 @@
 package ru.sshibko.AccountsManager.configuration;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.crypto.Cipher;
@@ -9,11 +11,14 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
 @Configuration
+@RequiredArgsConstructor
 public class BeanConfig {
 
-    //TODO remove to env or properties
-    private static final String AES = "AES";
-    private static final String SECRET = "secret-key-12345";
+    @Value("${account.security.aes}")
+    private String AES;
+
+    @Value("${account.security.secret}")
+    private String SECRET;
 
     @Bean
     public Key key() {

@@ -34,3 +34,7 @@ spring:
 #      generate-ddl: false
 #      show-sql: true
 #      open-in-view: false
+account:
+  security:
+    aes:
+    secret:

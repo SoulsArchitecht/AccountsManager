@@ -2,9 +2,7 @@ package ru.sshibko.AccountsManager.service;
 
 import jakarta.persistence.AttributeConverter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -16,7 +14,6 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class AttributeEncryptor implements AttributeConverter<String, String> {
 
-    @Autowired
     private final Key key;
     private final Cipher cipher;
 
