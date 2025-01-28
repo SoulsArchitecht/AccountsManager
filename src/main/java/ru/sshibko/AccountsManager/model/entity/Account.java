@@ -3,19 +3,19 @@ package ru.sshibko.AccountsManager.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import ru.sshibko.AccountsManager.service.AttributeEncryptor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "accounts")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account implements Serializable {
@@ -75,4 +75,33 @@ public class Account implements Serializable {
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
     private User user;
+
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "active=" + active +
+                ", nickName='" + nickName + '\'' +
+                ", emailAnother='" + emailAnother + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", login='" + login + '\'' +
+                ", changedAt=" + changedAt +
+                ", createdAt=" + createdAt +
+                ", description='" + description + '\'' +
+                ", link='" + link + '\'' +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Account account)) return false;
+        return id == account.id && active == account.active && Objects.equals(link, account.link) && Objects.equals(description, account.description) && Objects.equals(createdAt, account.createdAt) && Objects.equals(changedAt, account.changedAt) && Objects.equals(login, account.login) && Objects.equals(password, account.password) && Objects.equals(email, account.email) && Objects.equals(emailAnother, account.emailAnother) && Objects.equals(nickName, account.nickName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, link, description, createdAt, changedAt, login, password, email, emailAnother, nickName, active);
+    }
 }
