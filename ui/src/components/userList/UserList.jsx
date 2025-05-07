@@ -108,10 +108,12 @@ const UserList = (props) => {
             .then((response) => {
                 //history.push("/accounts");
 
-                let newUsers = [...usersRef.current];
-                newUsers.splice(rowIndex, 1);
+                //let newUsers = [...usersRef.current];
+                //newUsers.splice(rowIndex, 1);
 
-                response.setUsers(newUsers);
+                //response.setUsers(newUsers);
+
+                retrieveUsers();
             })
             .catch((e) => {
                 console.log(e);

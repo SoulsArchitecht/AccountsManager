@@ -27,6 +27,11 @@ const Header = () => {
                   Home
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to={"/users"} className="nav-link">
+                  UserList
+                </Link>
+              </li>
             </div>
         </nav>
     </div>

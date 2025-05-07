@@ -133,10 +133,11 @@ const AccountList = (props) => {
             .then((response) => {
                 //history.push("/accounts");
 
-                let newAccounts = [...accountsRef.current];
-                newAccounts.splice(rowIndex, 1);
+                //const newAccounts = [...accounts];
+                //newAccounts.splice(rowIndex, 1);
 
-                response.setAccounts(newAccounts);
+                //setAccounts(newAccounts);
+                retrieveAccounts();
             })
             .catch((e) => {
                 console.log(e);
