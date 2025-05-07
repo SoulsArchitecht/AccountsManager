@@ -83,7 +83,7 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: link
-                  value: http:mail.ru
+                  value: https://mail.ru
               - column:
                   name: description
                   value: none
@@ -95,13 +95,13 @@ databaseChangeLog:
                   value: 2023-12-24 18:24:05
               - column:
                   name: login
-                  value: user
+                  value: Fr3oYzseL6Sw1U0M0W3BXA==
               - column:
                   name: password
-                  value: user
+                  value: Fr3oYzseL6Sw1U0M0W3BXA==
               - column:
                   name: email
-                  value: emailusers
+                  value: xNXb5MSN3T4Mwo9wofKUpg==
               - column:
                   name: nickname
                   value: first
@@ -119,7 +119,7 @@ databaseChangeLog:
                   value: 2
               - column:
                   name: link
-                  value: http:2mail.ru
+                  value: https://2mail.ru
               - column:
                   name: description
                   value: none2
@@ -131,13 +131,13 @@ databaseChangeLog:
                   value: 2023-12-22 18:24:05
               - column:
                   name: login
-                  value: user2
+                  value: 4p/mpfdZUt9HG93GzyB2lw==
               - column:
                   name: password
-                  value: user2
+                  value: 4p/mpfdZUt9HG93GzyB2lw==
               - column:
                   name: email
-                  value: emailusers2
+                  value: Vz8puGiCA0qUJ8y3UTweYQ==
               - column:
                   name: nickname
                   value: second
@@ -155,7 +155,7 @@ databaseChangeLog:
                   value: 3
               - column:
                   name: link
-                  value: http:3mail.ru
+                  value: https://3mail.ru
               - column:
                   name: description
                   value: none3
@@ -167,16 +167,16 @@ databaseChangeLog:
                   value: 2023-12-21 18:24:05
               - column:
                   name: login
-                  value: user3
+                  value: yeLd3n7A+m3KGgpQjZ0Sjw==
               - column:
                   name: password
-                  value: user3
+                  value: yeLd3n7A+m3KGgpQjZ0Sjw==
               - column:
                   name: email
-                  value: emailusers3
+                  value: PZD8YdYzuE5uvoqDtHbl7Q==
               - column:
                   name: another_email
-                  value: another
+                  value: /nTewsZoBoQrZ/zs9xTAbg==
               - column:
                   name: nickname
                   value: third
