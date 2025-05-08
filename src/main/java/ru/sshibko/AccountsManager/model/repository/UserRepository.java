@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.sshibko.AccountsManager.model.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -22,4 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = searchQuery, nativeQuery = true)
     List<User> findUserByKeyword(@Param("keyword") String keyword);
+
+    Optional<User> findUserByEmail(String email);
+
+    boolean existsByEmail(String email);
 }
