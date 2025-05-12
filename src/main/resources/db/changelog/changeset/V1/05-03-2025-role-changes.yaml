@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 06-change-user_role-table
+      author: Sergey Shibko
+      changes:
+        - dropTable:
+            tableName: user_roles
+        - addColumn:
+            tableName: users
+            columns:
+                - column:
+                    name: role
+                    type: VARCHAR(255)
+                    defaultValue: ROLE_USER
+  - changeSet:
+      id: 07-drop-role-table
+      author: Sergey Shibko
+      changes:
+        - dropTable:
+            tableName: roles

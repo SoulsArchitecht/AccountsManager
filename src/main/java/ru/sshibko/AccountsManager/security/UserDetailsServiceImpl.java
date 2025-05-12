@@ -22,8 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(user -> new org.springframework.security.core.userdetails.User(
                         user.getEmail(),
                         user.getPassword(),
-                        //TODO resolve role and roles
-                        Collections.singleton(new SimpleGrantedAuthority(user.getRoleList().toString()))
+                        Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()))
                 ))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
     }

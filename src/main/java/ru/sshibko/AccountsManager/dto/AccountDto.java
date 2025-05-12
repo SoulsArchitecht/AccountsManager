@@ -3,14 +3,13 @@ package ru.sshibko.AccountsManager.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.sshibko.AccountsManager.common.Const;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class AccountDto implements Serializable {

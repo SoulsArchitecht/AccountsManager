@@ -22,9 +22,6 @@ import ru.sshibko.AccountsManager.model.entity.User;
 import ru.sshibko.AccountsManager.model.repository.UserRepository;
 import ru.sshibko.AccountsManager.security.JwtTokenProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,15 +42,11 @@ public class AuthService {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        //TODO Role and roles
-        List<Role> roleList = new ArrayList<>();
-        //roleList.add(Role.USER);
-
         ru.sshibko.AccountsManager.model.entity.User user = User.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .login(request.getLogin())
-                .roleList(roleList)
+                .role(Role.ROLE_USER)
                 .status(true)
                 .build();
 
