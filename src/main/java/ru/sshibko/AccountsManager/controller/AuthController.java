@@ -10,6 +10,7 @@ import ru.sshibko.AccountsManager.dto.security.LoginRequest;
 import ru.sshibko.AccountsManager.dto.security.RegisterRequest;
 import ru.sshibko.AccountsManager.service.AuthService;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -19,13 +20,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    //@ResponseStatus(HttpStatus.ACCEPTED)
     public AuthResponse login(@Valid LoginRequest request) {
         return authService.login(request);
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
+    //@ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }

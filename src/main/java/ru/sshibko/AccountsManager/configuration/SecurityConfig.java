@@ -16,11 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.sshibko.AccountsManager.security.JwtAuthenticationEntryPoint;
 import ru.sshibko.AccountsManager.security.JwtAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -28,16 +29,21 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthenticationFilter jwtAuthenticationFilter
+    ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 //TODO check and setup cors
                 //.cors()
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/swagger-resources/**",
-                                "/v2/api-docs", "/webjars/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers(new AntPathRequestMatcher("/auth/login", "POST")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/auth/register", "POST")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(configurer -> configurer
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))

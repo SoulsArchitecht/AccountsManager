@@ -42,9 +42,9 @@ public class AuthService {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        ru.sshibko.AccountsManager.model.entity.User user = User.builder()
+        User user = User.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .login(request.getLogin())
                 .role(Role.ROLE_USER)
                 .status(true)
@@ -56,7 +56,16 @@ public class AuthService {
         return authenticateUser(request.getEmail(), request.getPassword());
     }
 
-    private AuthResponse authenticateUser(@NotBlank(message = "Email cannot be null")
+    private AuthResponse authenticateUser(String email, String password) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        String jwt = jwtTokenProvider.generateJwtToken(authentication);
+        return new AuthResponse(jwt);
+    }
+
+/*    private AuthResponse authenticateUser(@NotBlank(message = "Email cannot be null")
                                           @Email(message = "email must be in correct form") String email,
                                           @NotBlank(message = "Password cannot be null")
                                           @Size(min = 8, message = "Password minimum length is 8") String password) {
@@ -66,7 +75,7 @@ public class AuthService {
 
         String jwt = jwtTokenProvider.generateJwtToken(authentication);
         return new AuthResponse(jwt);
-    }
+    }*/
 
     public AuthResponse login(@Valid LoginRequest request) {
         return authenticateUser(request.getEmail(), request.getPassword());

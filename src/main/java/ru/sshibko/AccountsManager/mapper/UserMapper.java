@@ -43,7 +43,7 @@ public class UserMapper implements Serializable {
         user.setPassword(userDto.getPassword());
         user.setStatus(userDto.isStatus());
         user.setAccountList(userDto.getAccountList());
-        user.setRole(userDto.getRole());
+        user.setRole(role);
 
         return user;
     }
