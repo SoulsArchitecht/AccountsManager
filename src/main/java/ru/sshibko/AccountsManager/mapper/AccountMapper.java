@@ -1,13 +1,19 @@
 package ru.sshibko.AccountsManager.mapper;
 
+import lombok.RequiredArgsConstructor;
 import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.model.entity.Account;
+import ru.sshibko.AccountsManager.model.entity.User;
+import ru.sshibko.AccountsManager.model.repository.UserRepository;
 
 import java.io.Serializable;
 
+@RequiredArgsConstructor
 public class AccountMapper implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private final UserRepository userRepository;
 
     public static AccountDto mapToAccountDto(Account account) {
         AccountDto accountDto = new AccountDto();
@@ -30,6 +36,7 @@ public class AccountMapper implements Serializable {
 
     public static Account mapToAccount(AccountDto accountDto) {
         Account account = new Account();
+        //User user = userRepository.findById(accountDto.getUserId());
 
         account.setId(account.getId());
         account.setLink(accountDto.getLink());
@@ -42,6 +49,7 @@ public class AccountMapper implements Serializable {
         account.setNickName(accountDto.getNickName());
         account.setPassword(accountDto.getPassword());
         account.setActive(accountDto.isActive());
+        //account.setUser(user);
 
         return account;
     }

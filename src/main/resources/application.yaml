@@ -36,5 +36,5 @@ spring:
 #      open-in-view: false
 account:
   security:
-    aes:
-    secret:
+    aes: "AES"
+    secret: "secret-key-12345"

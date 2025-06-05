@@ -20,13 +20,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    //@ResponseStatus(HttpStatus.ACCEPTED)
-    public AuthResponse login(@Valid LoginRequest request) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
     @PostMapping("/register")
-    //@ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
