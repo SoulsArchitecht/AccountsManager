@@ -1,5 +1,6 @@
 package ru.sshibko.AccountsManager.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.exception.ResourceNotFoundException;
 import ru.sshibko.AccountsManager.model.entity.Role;
@@ -7,27 +8,24 @@ import ru.sshibko.AccountsManager.model.entity.User;
 
 import java.io.Serializable;
 
+@Component
 public class UserMapper implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static UserDto mapToUserDto(User user) {
-        UserDto userDto = new UserDto();
-
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setLogin(user.getLogin());
-        userDto.setPassword(user.getPassword());
-        userDto.setStatus(user.isStatus());
-        userDto.setAccountList(user.getAccountList());
-        userDto.setRole(user.getRole());
-
-        return userDto;
+    public UserDto toDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .login(user.getLogin())
+                .password(user.getPassword())
+                .status(user.isStatus())
+                .accountList(user.getAccountList())
+                .role(user.getRole())
+                .build();
     }
 
-    public static User mapToUser(UserDto userDto) {
-        User user = new User();
-
+    public User toEntity(UserDto userDto) {
         Role role = null;
         if (userDto.getRole() != null) {
             try {
@@ -37,14 +35,14 @@ public class UserMapper implements Serializable {
             }
         }
 
-        user.setId(user.getId());
-        user.setEmail(userDto.getEmail());
-        user.setLogin(userDto.getLogin());
-        user.setPassword(userDto.getPassword());
-        user.setStatus(userDto.isStatus());
-        user.setAccountList(userDto.getAccountList());
-        user.setRole(role);
-
-        return user;
+        return User.builder()
+                .id(userDto.getId())
+                .email(userDto.getEmail())
+                .login(userDto.getLogin())
+                .password(userDto.getPassword())
+                .status(userDto.isStatus())
+                .accountList(userDto.getAccountList())
+                .role(role)
+                .build();
     }
 }

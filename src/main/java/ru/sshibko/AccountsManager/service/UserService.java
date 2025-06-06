@@ -23,20 +23,22 @@ public class UserService implements CRUDService<UserDto> {
 
     private final UserRepository userRepository;
 
+    private final UserMapper userMapper;
+
     @Override
     public UserDto getById(Long id) {
         log.info("User get by ID {} ", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User with given id: " + id + " is not exists"));
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toDto(user);
     }
 
     @Override
     public Collection<UserDto> getAll() {
         log.info("Get all users");
         List<User> userList = userRepository.findAll();
-        return userList.stream().map(UserMapper::mapToUserDto)
+        return userList.stream().map(userMapper::toDto)
                 .toList();
     }
 
@@ -44,18 +46,18 @@ public class UserService implements CRUDService<UserDto> {
     @Transactional
     public UserDto create(UserDto userDto) {
         log.info("Creating new user");
-        User user = UserMapper.mapToUser(userDto);
+        User user = userMapper.toEntity(userDto);
         User savedUser = userRepository.save(user);
-        return UserMapper.mapToUserDto(savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
         log.info("Updating user with id {} ", id);
-        User user = UserMapper.mapToUser(userDto);
+        User user = userMapper.toEntity(userDto);
         userRepository.save(user);
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class UserService implements CRUDService<UserDto> {
     public Collection<UserDto> findByKeyword(String keyword) {
         log.info("Finding users by keyword {}",  keyword);
         List<User> userList = userRepository.findUserByKeyword(keyword);
-        return userList.stream().map(UserMapper::mapToUserDto)
+        return userList.stream().map(userMapper::toDto)
                 .toList();
     }
 

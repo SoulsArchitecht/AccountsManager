@@ -16,6 +16,7 @@ import ru.sshibko.AccountsManager.model.entity.User;
 import ru.sshibko.AccountsManager.model.repository.AccountRepository;
 import ru.sshibko.AccountsManager.model.repository.UserRepository;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,21 +28,22 @@ public class AccountService implements CRUDService<AccountDto>{
 
     private final UserRepository userRepository;
 
+    private final AccountMapper accountMapper;
+
     @Override
     public AccountDto getById(Long id) {
         log.info("Account get by ID: {} ", id);
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Account with given id: " + id + " is not exists"));
-        return AccountMapper.mapToAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Override
     public Collection<AccountDto> getAll() {
         log.info("Getting all accounts");
         List<Account> accountList = accountRepository.findAll();
-        return accountList.stream().map(AccountMapper::mapToAccountDto)
-                .toList();
+        return accountList.stream().map(accountMapper::toDto).toList();
     }
 
 /*    public Map<String, Object> getAllAccountsPageable(String keyword, int page, int size) {
@@ -84,13 +86,13 @@ public class AccountService implements CRUDService<AccountDto>{
     @Transactional
     public AccountDto create(@Valid AccountDto accountDto) {
         log.info("Creating new account");
-        Account account = AccountMapper.mapToAccount(accountDto);
+        Account account = accountMapper.toEntity(accountDto);
         Long userId = accountDto.getUserId();
         User user =  userRepository.findById(userId).orElseThrow();
         account.setUser(user);
         Account savedAccount = accountRepository.save(account);
         log.info("Account with ID {} created successfully!", account.getId());
-        return AccountMapper.mapToAccountDto(savedAccount);
+        return accountMapper.toDto(savedAccount);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class AccountService implements CRUDService<AccountDto>{
         Account updatedAccount = accountRepository.save(account);
 
         log.info("Account with ID {} updated successfully!", accountId);
-        return AccountMapper.mapToAccountDto(updatedAccount);
+        return accountMapper.toDto(updatedAccount);
     }
 
     @Override
@@ -151,7 +153,7 @@ public class AccountService implements CRUDService<AccountDto>{
     public Collection<AccountDto> findByKeyword(String keyword) {
         log.info("Finding accounts by keyword {}", keyword);
         List<Account> accountList = accountRepository.findByKeyword(keyword);
-        return accountList.stream().map(AccountMapper::mapToAccountDto)
+        return accountList.stream().map(accountMapper::toDto)
                 .toList();
     }
 }

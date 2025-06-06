@@ -13,7 +13,7 @@ import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
-@Converter
+//@Converter
 public class AttributeEncryptor implements AttributeConverter<String, String> {
 
     private final Key key;

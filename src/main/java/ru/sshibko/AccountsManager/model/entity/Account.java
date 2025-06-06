@@ -18,6 +18,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;

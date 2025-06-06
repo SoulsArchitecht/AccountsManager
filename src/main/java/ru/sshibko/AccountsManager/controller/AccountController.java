@@ -3,12 +3,15 @@ package ru.sshibko.AccountsManager.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.PagedDataDto;
 import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.service.AccountService;
 import java.util.Collection;
+
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 
 @CrossOrigin("*")
 @RestController
@@ -24,6 +27,7 @@ public class AccountController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PagedDataDto<Account> getAllAccountPaged(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -38,8 +42,8 @@ public class AccountController {
         return pagedDataDto;
     }
 
-
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public AccountDto createAccount(@RequestBody AccountDto accountDto) {
         return accountService.create(accountDto);
     }

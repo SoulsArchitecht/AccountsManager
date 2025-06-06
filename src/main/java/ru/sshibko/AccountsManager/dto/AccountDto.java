@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Builder
 public class AccountDto implements Serializable {
 
         private static final long serialVersionUID = 1L;

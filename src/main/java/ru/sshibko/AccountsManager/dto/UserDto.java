@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Builder
 public class UserDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
