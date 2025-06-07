@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class UserDto implements Serializable {
+public final class UserDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

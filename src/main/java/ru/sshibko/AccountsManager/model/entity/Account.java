@@ -26,7 +26,7 @@ public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
-    private long id;
+    private Long id;
 
     @NotBlank
     @Column(name = "link", nullable = false)
@@ -71,7 +71,7 @@ public class Account implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
+ //   @JsonIgnore
 //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
@@ -93,16 +93,5 @@ public class Account implements Serializable {
                 ", link='" + link + '\'' +
                 ", id=" + id +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Account account)) return false;
-        return id == account.id && active == account.active && Objects.equals(link, account.link) && Objects.equals(description, account.description) && Objects.equals(createdAt, account.createdAt) && Objects.equals(changedAt, account.changedAt) && Objects.equals(login, account.login) && Objects.equals(password, account.password) && Objects.equals(email, account.email) && Objects.equals(emailAnother, account.emailAnother) && Objects.equals(nickName, account.nickName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, link, description, createdAt, changedAt, login, password, email, emailAnother, nickName, active);
     }
 }

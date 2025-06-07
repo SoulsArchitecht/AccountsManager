@@ -36,11 +36,10 @@ public class AccountMapper implements Serializable {
     }
 
     public Account toEntity(AccountDto accountDto) {
-        User user = userRepository.findById(accountDto.getUserId()).orElseThrow(
+/*        User user = userRepository.findById(accountDto.getUserId()).orElseThrow(
                 () -> new ResourceNotFoundException("User not exist with ID " + accountDto.getUserId())
-        );
+        );*/
         return Account.builder()
-                .id(accountDto.getId())
                 .link(accountDto.getLink())
                 .description(accountDto.getDescription())
                 .createdAt(accountDto.getCreatedAt())
@@ -51,7 +50,6 @@ public class AccountMapper implements Serializable {
                 .nickName(accountDto.getNickName())
                 .password(accountDto.getPassword())
                 .active(accountDto.isActive())
-                .user(user)
                 .build();
     }
 }
