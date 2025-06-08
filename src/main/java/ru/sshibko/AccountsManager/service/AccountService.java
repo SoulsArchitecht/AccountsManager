@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.sshibko.AccountsManager.dto.AccountDto;
+import ru.sshibko.AccountsManager.exception.AccountAccessException;
 import ru.sshibko.AccountsManager.exception.ResourceNotFoundException;
 import ru.sshibko.AccountsManager.exception.UnauthorizedAccessException;
 import ru.sshibko.AccountsManager.mapper.AccountMapper;
@@ -41,6 +42,10 @@ public class AccountService implements CRUDService<AccountDto>{
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Account with given id: " + id + " is not exists"));
+        User currentUser = userService.getCurrentUser();
+        if (!userService.isAdmin(currentUser) && !userService.isAccountOwner(account, currentUser)) {
+            throw new AccountAccessException( "You do not have permission to access this resource");
+        }
         return accountMapper.toDto(account);
     }
 
@@ -113,8 +118,8 @@ public class AccountService implements CRUDService<AccountDto>{
         );
         log.info("Updating account with ID {}", accountId);
         User currentUser = userService.getCurrentUser();
-        if (!currentUser.getRole().equals(Role.ROLE_ADMIN) && !currentUser.getId().equals(account.getUser().getId())) {
-            throw new UnauthorizedAccessException("You do not have permission to update this account");
+        if (!userService.isAdmin(currentUser) && !userService.isAccountOwner(account, currentUser)) {
+            throw new AccountAccessException( "You do not have permission to access this resource");
         }
         account.setUser(currentUser);
 
@@ -155,13 +160,19 @@ public class AccountService implements CRUDService<AccountDto>{
                         "Account with given id: " + accountId + "is not exists"))
         );
 
+        //TODO maybe throw exception?
         User currentUser = userService.getCurrentUser();
-        if (currentUser != null && (currentUser.getId().equals(account.getUser().getId()) ||
+        if (!userService.isAdmin(currentUser) && !userService.isAccountOwner(account, currentUser)) {
+            throw new AccountAccessException( "You do not have permission to access this resource");
+        }
+/*        if (currentUser != null && (currentUser.getId().equals(account.getUser().getId()) ||
                 currentUser.getRole() == Role.ROLE_ADMIN)) {
                 account.setActive(false);
-        }
+        }*/
         //TODO resolve delete or deactivate
         //accountRepository.delete(account);
+        account.setActive(false);
+        accountRepository.save(account);
         log.info("Account with ID {} deleted successfully!", accountId);
     }
 
