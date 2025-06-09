@@ -1,5 +1,8 @@
 package ru.sshibko.AccountsManager.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,24 +15,26 @@ import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.service.AccountService;
 import java.util.Collection;
 
-import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
-
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Accounts", description = "Account Management API")
 public class AccountController {
 
     private final AccountService accountService;
 
     @GetMapping
+    @Operation(summary = "Get current user accounts for current user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public Page<AccountDto> getAllCurrentUserAccounts(Pageable pageable) {
         return accountService.getAllAccountCurrentUser(pageable);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Get account by id for account owner or ADMIN")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public AccountDto getAccountById(@PathVariable("id") Long id) {
         return accountService.getById(id);
     }
@@ -51,30 +56,35 @@ public class AccountController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new account by current User or ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public AccountDto createAccount(@RequestBody AccountDto accountDto) {
         return accountService.create(accountDto);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update existing account by id for USER account owner or ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public AccountDto updateAccount(@PathVariable("id") Long id, @RequestBody AccountDto updatedAccountDto) {
         return accountService.update(id, updatedAccountDto);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @DeleteMapping("/{id}")
+    @Operation(summary = "remove existing account by ID for USER account owner or ADMIN")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public void deleteAccount(@PathVariable("id") Long accountId) {
         accountService.delete(accountId);
     }
 
     @GetMapping("/search/{keyword}/")
+    @Operation(summary = "search any account by link or description by entering keyword for ADMIN only")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Collection<AccountDto> getByKeyword(@PathVariable("keyword") String keyword) {
         return accountService.findByKeyword(keyword);
     }
 
     @GetMapping("/search/{keyword}")
+    @Operation(summary = "search current user accounts by link or description by entering keyword for USER and ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public Page<AccountDto> getByKeyword(@PathVariable("keyword") String keyword, Pageable pageable) {
         return accountService.findByCurrentUserAndKeyword(keyword, pageable);
