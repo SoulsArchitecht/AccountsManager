@@ -12,7 +12,7 @@ import ru.sshibko.AccountsManager.dto.security.LoginRequest;
 import ru.sshibko.AccountsManager.dto.security.RegisterRequest;
 import ru.sshibko.AccountsManager.service.AuthService;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

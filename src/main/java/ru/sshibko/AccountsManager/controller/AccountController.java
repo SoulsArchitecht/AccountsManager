@@ -15,7 +15,7 @@ import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.service.AccountService;
 import java.util.Collection;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor

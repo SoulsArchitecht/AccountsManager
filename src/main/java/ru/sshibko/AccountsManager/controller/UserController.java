@@ -15,7 +15,7 @@ import ru.sshibko.AccountsManager.service.UserService;
 
 import java.util.Collection;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
