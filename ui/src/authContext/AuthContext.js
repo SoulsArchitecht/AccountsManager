@@ -1,12 +1,13 @@
 import {createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login as authLogin, register as authRegister } from '../../src/services/AuthService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     useEffect(() => {
         if (token) {
@@ -19,59 +20,36 @@ export const AuthProvider = ({ children }) => {
         }
     }, [token]);
 
-    //TODO refactor with authService
     const login = async (email, password) => {
         try {
-            const response = await fetch('http://localhost:8088/auth/login',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({email, password}),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-
-            const data = await response.json();
-            setToken(data.token);
-            navigate('/');
+          const response = await authLogin(email, password);
+          setToken(response.data.token);
+          return { success: true };
+          //navigate('/');
         } catch (error) {
-            console.error('Login error:', error);
-            throw error;
+          console.error('Login error:', error);
+          return { success: false, error: error.message }
+          //throw error;
         }
-    };
-
-    const register = async (email, password, login) => {
+      };
+    
+      const register = async (email, password, login) => {
         try {
-            const response = await fetch('http://localhost:8088/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({email, password, login}),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Registation failed');
-            }
-
-            const data = await response.json();
-            setToken(data.token);
-            navigate('/');
+          const response = await authRegister(email, password, login);
+          setToken(response.data.token);
+          return { success: true };
+          //navigate('/');
         } catch (error) {
-            console.error('Registration error:', error);
-            throw error;
+          console.error('Registration error:', error);
+          return { success: false, error: error.message };
+          //throw error;
         }
-    };
+      };
 
     const logout = () => {
         setToken(null);
-        navigate('/');
+        return { success: true };
+        //navigate('/');
     };
 
     return (
@@ -81,4 +59,10 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};

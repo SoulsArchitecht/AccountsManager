@@ -1,239 +1,100 @@
-import React, {useState, useEffect, useRef, useMemo} from 'react';
-import {getAllAccounts} from '../../services/AccountService';
-import {useNavigate} from 'react-router-dom'
+import React, { useState, useEffect, useMemo } from 'react';
+import { getAllAccounts } from '../../services/AccountService';
+import { useNavigate } from 'react-router-dom';
 import { deleteAccount, findByKeyword } from '../../services/AccountService';
-import {format} from 'date-fns';
+import { format } from 'date-fns';
 import { useTable } from 'react-table';
 import Pagination from '@material-ui/lab/Pagination';
-//import history from 'history';
-//import { Typography } from '@material-ui/core';
+import { useAuth } from '../../authContext/AuthContext';
 
-
-const AccountList = (props) => {
-
-    const [accounts, setAccounts] = useState([]);
-    const [keyword, setKeyword] = useState("");
-    const [page, setPage] = useState(1);
-    const [count, setCount] = useState(0);
+const AccountList = () => {
+    const [data, setData] = useState({
+        accounts: [],
+        totalPages: 0,
+        totalElements: 0,
+        loading: true,
+        error: null
+    });
+    const [page, setPage] = useState(0); // Spring использует 0-based индексацию
     const [pageSize, setPageSize] = useState(5);
-    const accountsRef = useRef();
+    const [keyword, setKeyword] = useState('');
+    const { token } = useAuth();
+    const navigate = useNavigate();
 
-    const pageSizes = [10, 20, 40];
-    accountsRef.current = accounts;
-    
-
-    const navigator = useNavigate();
-
-    const onChangeSearchKeyword = (e) => {
-        const keyword = e.target.value;
-        setKeyword(keyword);
-    }
-
-    const getByKeyword = () => {
-        findByKeyword(keyword)
-          .then(response => {
-            setAccounts(response.data);
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      };
-
-    const getRequestParams = (keyword, page, pageSize) => {
-        let params = {};
-
-        if (keyword) {
-            params["keyword"] = keyword;
+    const fetchAccounts = async () => {
+        try {
+            setData(prev => ({ ...prev, loading: true, error: null }));
+            const params = {
+                page,
+                size: pageSize,
+                ...(keyword && { keyword })
+            };
+            
+            const response = await getAllAccounts(params);
+            setData({
+                accounts: response.data.content || [],
+                totalPages: response.data.totalPages,
+                totalElements: response.data.totalElements,
+                loading: false,
+                error: null
+            });
+        } catch (error) {
+            setData({
+                accounts: [],
+                totalPages: 0,
+                totalElements: 0,
+                loading: false,
+                error: error.response?.data?.message || 'Failed to fetch accounts'
+            });
+            console.error('Error fetching accounts:', error);
         }
+    };
 
-        if (page) {
-            params["page"] = page - 1;
+    useEffect(() => {
+        fetchAccounts();
+    }, [page, pageSize, keyword, token]);
+
+    const columns = useMemo(() => [
+        { Header: 'Link', accessor: 'link' },
+        { Header: 'Description', accessor: 'description' },
+        { 
+            Header: 'Created At', 
+            accessor: 'createdAt',
+            Cell: ({ value }) => format(new Date(value), 'dd.MM.yyyy HH:mm')
+        },
+        { 
+            Header: 'Updated At', 
+            accessor: 'changedAt',
+            Cell: ({ value }) => format(new Date(value), 'dd.MM.yyyy HH:mm')
+        },
+        { Header: 'Login', accessor: 'login' },
+        { Header: 'Email', accessor: 'email' },
+        { 
+            Header: 'Active', 
+            accessor: 'active',
+            Cell: ({ value }) => value ? 'Yes' : 'No'
+        },
+        {
+            Header: 'Actions',
+            accessor: 'actions',
+            Cell: ({ row }) => (
+                <div>
+                    <button 
+                        onClick={() => navigate(`/edit-account/${row.original.id}`)}
+                        className="btn btn-warning btn-sm mr-2"
+                    >
+                        Edit
+                    </button>
+                    <button 
+                        onClick={() => console.log('Delete', row.original.id)}
+                        className="btn btn-danger btn-sm"
+                    >
+                        Delete
+                    </button>
+                </div>
+            )
         }
-
-        if (pageSize) {
-            params["size"] = pageSize;
-        }
-
-        return params;
-    }
-
-    // useEffect(() => {
-    //     getAllAccounts();
-    // }, [])
-
-    // function getAllAccounts() {
-    //     accountList().then((response) => {
-    //         setAccounts(response.data);
-    //     }).catch(error => {
-    //         console.error(error);
-    //     })
-    // }
-
-    const retrieveAccounts = () => {
-        const params = getRequestParams(keyword, page, pageSize);
-
-        getAllAccounts(params)
-            .then((response) => {
-                //const {accounts, totalPages} = response.data;
-                const accounts = response.data.data;
-                const totalPages = response.data.total;
-
-                setAccounts(accounts);
-                setCount(totalPages);
-                console.log(response.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            })
-    }
-
-    function addNewAccount() {
-        navigator('/add-account');
-    }
-
-    function updateAccount(id) {
-        navigator(`/edit-account/${id}`);
-    }
-
-    // function formattedDate(date) {
-    //     return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(date);
-    // }    
-
-    function formatDate(date) {
-        return format(date, 'dd.MM.yyyy');
-    }
-    // function removeAccount(id) {
-    //     deleteAccount(id).then((response) => {
-    //         getAllAccounts(response.data);
-    //     }).catch(error => {
-    //         console.error(error);
-    //     })
-    // }
-
-    //  function formatDate(date) {
-    //      return moment(date).format("DD MMM YYYY");
-    //  }
-
-    // function formatDate(date) {
-    //     return new Date(date).toLocaleDateString("en-US");
-    // }
-
-    useEffect(retrieveAccounts, [keyword, page, pageSize]);
-
-    const findByKeyword = () => {
-        setPage(1);
-        retrieveAccounts();
-    }
-
-    const removeAccount = (rowIndex) => {
-        const id = accountsRef.current[rowIndex].id;
-
-        deleteAccount(id)
-            .then((response) => {
-                //history.push("/accounts");
-
-                //const newAccounts = [...accounts];
-                //newAccounts.splice(rowIndex, 1);
-
-                //setAccounts(newAccounts);
-                retrieveAccounts();
-            })
-            .catch((e) => {
-                console.log(e);
-            })
-
-    }
-
-    const handlePageChange = (event, value) => {
-        setPage(value);
-    }
-
-    const handlePageSizeChange = (event) => {
-        setPageSize(event.target.value);
-        setPage(1);
-    }
-
-    const columns = useMemo(
-        () => [
-            {
-                Header: "Link",
-                accessor: "link",
-            },
-            {
-                Header: "Description",
-                accessor: "description",
-            },
-            {
-                Header: "Created At",
-                accessor: "createdAt",
-                Cell: ({row}) => {
-                    //return <span>{row.original.createdAt}</span>;
-                    return <span>{formatDate(row.original.createdAt)}</span>
-                }
-            },
-            {
-                Header: "Changed At",
-                accessor: "changedAt",
-                Cell: ({ row }) => {
-                    return <span>{formatDate(row.original.changedAt)}</span>;
-                }
-            },
-            {
-                Header: "Login",
-                accessor: "login",
-            },
-            {
-                Header: "Password",
-                accessor: "password",
-            },
-            {
-                Header: "Email",
-                accessor: "email",
-            },
-            {
-                Header: "Email Another",
-                accessor: "emailAnother",
-            },
-            {
-                Header: "NickName",
-                accessor: "nickName",
-            },
-            {
-                Header: "Active",
-                accessor: "active",
-                Cell: ({ row }) => {
-                    if (row.original.active === true) {
-                        return "YES";
-                    } else {
-                        return "NO";
-                    }
-                }
-            },
-            {
-                Header: "Actions",
-                accessor: "actions",
-                Cell: (props) => {
-                    const rowIdx = props.row.id;
-                    return (
-                        <div>
-                            <span onClick = {() => updateAccount(rowIdx)}>
-                                <button type="button"
-                                className = "btn btn-warning btn-sm">Edit</button>
-                            </span>
-                            &nbsp;
-                            <span onClick = {() => removeAccount(rowIdx)}>
-                                <button type="button"
-                                className = "btn btn-danger btn-sm">Delete</button>
-                            </span>
-                        </div>
-                    );
-                },
-            },
-
-        ],
-        []
-    );
+    ], []);
 
     const {
         getTableProps,
@@ -241,121 +102,105 @@ const AccountList = (props) => {
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({
-        columns,
-        data: accounts,
-    });
+    } = useTable({ columns, data: data.accounts });
 
-  return (
-    <div className = "list row">
-        <br></br>
+    if (data.loading) return <div className="text-center mt-4">Loading...</div>;
+    if (data.error) return <div className="alert alert-danger">{data.error}</div>;
 
-        <div className = "col-md-8">
-            <div className = "input-group mb-3">
-                <input
-                type="text"
-                className="form-control"
-                placeholder="keyword"
-                value={keyword}
-                onChange={onChangeSearchKeyword}
-                />
-                <div className="input-group-append">
-                    <button
-                        className="btn btn-outline-success"
-                        type="button"
-                        onClick={findByKeyword}
+    return (
+        <div className="container mt-4">
+            <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center">
+                    <h3>Accounts</h3>
+                    <button 
+                        onClick={() => navigate('/add-account')}
+                        className="btn btn-primary"
                     >
-                        Search
+                        Add New Account
                     </button>
+                </div>
+                
+                <div className="card-body">
+                    <div className="row mb-3">
+                        <div className="col-md-6">
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    value={keyword}
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                />
+                                <button 
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => {
+                                        setPage(0);
+                                        fetchAccounts();
+                                    }}
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="table-responsive">
+                        <table {...getTableProps()} className="table table-striped">
+                            <thead>
+                                {headerGroups.map(headerGroup => (
+                                    <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map(column => (
+                                            <th {...column.getHeaderProps()}>
+                                                {column.render('Header')}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                                {rows.map(row => {
+                                    prepareRow(row);
+                                    return (
+                                        <tr {...row.getRowProps()}>
+                                            {row.cells.map(cell => (
+                                                <td {...cell.getCellProps()}>
+                                                    {cell.render('Cell')}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <select 
+                                className="form-select"
+                                value={pageSize}
+                                onChange={(e) => {
+                                    setPageSize(Number(e.target.value));
+                                    setPage(0);
+                                }}
+                            >
+                                {[5, 10, 20, 50].map(size => (
+                                    <option key={size} value={size}>{size} per page</option>
+                                ))}
+                            </select>
+                        </div>
+                        
+                        <Pagination
+                            count={data.totalPages}
+                            page={page + 1} // Material-UI использует 1-based индексацию
+                            onChange={(_, newPage) => setPage(newPage - 1)}
+                            color="primary"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div className = "col-md-12 list">
-            <div className = "mt-3">
-                {"Items per Page: "}
-                <select onChange={handlePageSizeChange} value = {pageSize}>
-                    {pageSizes.map((size) => (
-                        <option key = {size} value = {size}>
-                            {size}
-                        </option>
-                    ))}
-                </select>
-
-                <Pagination
-                    color = "primary"
-                    className = "my-3"
-                    count = {count}
-                    page = {page}
-                    siblingCount = {1}
-                    boundaryCount = {1}
-                    variant = "outlined"
-                    onChange = {handlePageChange}
-                />
-            </div>
-
-            <table
-                className = "table table-striped table-bordered"
-                {...getTableProps()}
-            >
-
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render("Header")}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <td {...cell.getCellProps()}>
-                                            {cell.render("Cell")}
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-
-            </table>
-
-            <div className="mt-3">
-                {"Items per Page: "}
-                <select onChange={handlePageSizeChange} value={pageSize}>
-                    {pageSizes.map((size) => (
-                    <option key={size} value={size}>
-                        {size}
-                    </option>
-                    ))}
-                </select>
-
-                <Pagination
-                    color="primary"
-                    className="my-3"
-                    count={count}
-                    page={page}
-                    siblingCount={1}
-                    boundaryCount={1}
-                    variant="outlined"
-                    onChange={handlePageChange}
-                />
-            </div>    
-
-
-        </div>
-    </div>
-  )
-}
+    );
+};
 
 export default AccountList;

@@ -1,202 +1,102 @@
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {getAllUsers} from '../../services/UserService';
 import {useNavigate} from 'react-router-dom'
 import { deleteUser, findByKeyword } from '../../services/UserService';
 import {format} from 'date-fns';
 import { useTable } from 'react-table';
 import Pagination from '@material-ui/lab/Pagination';
-//import history from 'history';
-//import { Typography } from '@material-ui/core';
+import { useAuth } from '../../authContext/AuthContext';
+import Unauthorized from '../../common/Unauthorized';
 
 
-const UserList = (props) => {
-
-    const [users, setUsers] = useState([]);
-    const [keyword, setKeyword] = useState("");
-    const [page, setPage] = useState(1);
-    const [count, setCount] = useState(0);
+const UserList = () => {
+    const [data, setData] = useState({
+        users: [],
+        totalPages: 0,
+        totalElements: 0,
+        loading: true,
+        error: null
+    });
+    const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
-    const usersRef = useRef();
+    const [keyword, setKeyword] = useState('');
+    const { user, token } = useAuth();
+    const navigate = useNavigate();
 
-    const pageSizes = [10, 20, 40];
-    usersRef.current = users;
-    
+    // Проверка на роль ADMIN
+    const isAdmin = user?.role === 'ROLE_ADMIN';
 
-    const navigator = useNavigate();
+    const fetchUsers = async () => {
+        if (!isAdmin) return;
 
-    const onChangeSearchKeyword = (e) => {
-        const keyword = e.target.value;
-        setKeyword(keyword);
-    }
-
-    const getByKeyword = () => {
-        findByKeyword(keyword)
-          .then(response => {
-            setUsers(response.data);
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      };
-
-    const getRequestParams = (keyword, page, pageSize) => {
-        let params = {};
-
-        if (keyword) {
-            params["keyword"] = keyword;
+        try {
+            setData(prev => ({ ...prev, loading: true, error: null }));
+            const params = {
+                page,
+                size: pageSize,
+                ...(keyword && { keyword })
+            };
+            
+            const response = await getAllUsers(params);
+            setData({
+                users: response.data.content || [],
+                totalPages: response.data.totalPages,
+                totalElements: response.data.totalElements,
+                loading: false,
+                error: null
+            });
+        } catch (error) {
+            setData({
+                users: [],
+                totalPages: 0,
+                totalElements: 0,
+                loading: false,
+                error: error.response?.data?.message || 'Failed to fetch users'
+            });
+            console.error('Error fetching users:', error);
         }
+    };
 
-        if (page) {
-            params["page"] = page - 1;
+    useEffect(() => {
+        if (isAdmin) {
+            fetchUsers();
         }
+    }, [page, pageSize, keyword, token, isAdmin]);
 
-        if (pageSize) {
-            params["size"] = pageSize;
+    const columns = useMemo(() => [
+        { Header: 'Email', accessor: 'email' },
+        { Header: 'Login', accessor: 'login' },
+        { 
+            Header: 'Role', 
+            accessor: 'role',
+            Cell: ({ value }) => value?.replace('ROLE_', '')
+        },
+        { 
+            Header: 'Status', 
+            accessor: 'status',
+            Cell: ({ value }) => value ? 'Active' : 'Inactive'
+        },
+        {
+            Header: 'Actions',
+            accessor: 'actions',
+            Cell: ({ row }) => (
+                <div>
+                    <button 
+                        onClick={() => navigate(`/edit-user/${row.original.id}`)}
+                        className="btn btn-warning btn-sm mr-2"
+                    >
+                        Edit
+                    </button>
+                    <button 
+                        onClick={() => console.log('Delete', row.original.id)}
+                        className="btn btn-danger btn-sm"
+                    >
+                        Delete
+                    </button>
+                </div>
+            )
         }
-
-        return params;
-    }
-
-
-    const retrieveUsers = () => {
-        const params = getRequestParams(keyword, page, pageSize);
-
-        getAllUsers(params)
-            .then((response) => {
-                //const {accounts, totalPages} = response.data;
-                const users = response.data.data;
-                const totalPages = response.data.total;
-
-                setUsers(users);
-                setCount(totalPages);
-                console.log(response.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            })
-    }
-
-    function addNewUser() {
-        navigator('/add-user');
-    }
-
-    function updateUser(id) {
-        navigator(`/edit-user/${id}`);
-    }
-
-    // function formattedDate(date) {
-    //     return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: '2-digit' }).format(date);
-    // }    
-
-    function formatDate(date) {
-        return format(date, 'dd.MM.yyyy');
-    }
-
-
-    useEffect(retrieveUsers, [keyword, page, pageSize]);
-
-    const findByKeyword = () => {
-        setPage(1);
-        retrieveUsers();
-    }
-
-    const removeUser = (rowIndex) => {
-        const id = usersRef.current[rowIndex].id;
-
-        deleteUser(id)
-            .then((response) => {
-                //history.push("/accounts");
-
-                //let newUsers = [...usersRef.current];
-                //newUsers.splice(rowIndex, 1);
-
-                //response.setUsers(newUsers);
-
-                retrieveUsers();
-            })
-            .catch((e) => {
-                console.log(e);
-            })
-
-    }
-
-    const handlePageChange = (event, value) => {
-        setPage(value);
-    }
-
-    const handlePageSizeChange = (event) => {
-        setPageSize(event.target.value);
-        setPage(1);
-    }
-
-    const columns = useMemo(
-        () => [
-            {
-                Header: "Email",
-                accessor: "email",
-            },
-            // {
-            //     Header: "Created At",
-            //     accessor: "createdAt",
-            //     Cell: ({row}) => {
-            //         return <span>{formatDate(row.original.createdAt)}</span>
-            //     }
-            // },
-            // {
-            //     Header: "Updated At",
-            //     accessor: "updatedAt",
-            //     Cell: ({ row }) => {
-            //         return <span>{formatDate(row.original.changedAt)}</span>;
-            //     }
-            // },
-            {
-                Header: "Login",
-                accessor: "login",
-            },
-            {
-                Header: "Password",
-                accessor: "password",
-            },
-            {
-                Header: "RoleList",
-                accessor: "roles",
-            },
-            {
-                Header: "Active",
-                accessor: "active",
-                Cell: ({ row }) => {
-                    if (row.original.active === true) {
-                        return "YES";
-                    } else {
-                        return "NO";
-                    }
-                }
-            },
-            {
-                Header: "Actions",
-                accessor: "actions",
-                Cell: (props) => {
-                    const rowIdx = props.row.id;
-                    return (
-                        <div>
-                            <span onClick = {() => updateUser(rowIdx)}>
-                                <button type="button"
-                                className = "btn btn-warning btn-sm">Edit</button>
-                            </span>
-                            &nbsp;
-                            <span onClick = {() => removeUser(rowIdx)}>
-                                <button type="button"
-                                className = "btn btn-danger btn-sm">Delete</button>
-                            </span>
-                        </div>
-                    );
-                },
-            },
-
-        ],
-        []
-    );
+    ], []);
 
     const {
         getTableProps,
@@ -204,121 +104,112 @@ const UserList = (props) => {
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({
-        columns,
-        data: users,
-    });
+    } = useTable({ columns, data: data.users });
 
-  return (
-    <div className = "list row">
-        <br></br>
+    if (!isAdmin) {
+        return <Unauthorized 
+            title="Access Denied" 
+            message="You must be an administrator to view this page" 
+        />;
+    }
 
-        <div className = "col-md-8">
-            <div className = "input-group mb-3">
-                <input
-                type="text"
-                className="form-control"
-                placeholder="keyword"
-                value={keyword}
-                onChange={onChangeSearchKeyword}
-                />
-                <div className="input-group-append">
-                    <button
-                        className="btn btn-outline-success"
-                        type="button"
-                        onClick={findByKeyword}
+    if (data.loading) return <div className="text-center mt-4">Loading users...</div>;
+    if (data.error) return <div className="alert alert-danger">{data.error}</div>;
+
+    return (
+        <div className="container mt-4">
+            <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center">
+                    <h3>User Management</h3>
+                    <button 
+                        onClick={() => navigate('/add-user')}
+                        className="btn btn-primary"
                     >
-                        Search
+                        Add New User
                     </button>
+                </div>
+                
+                <div className="card-body">
+                    <div className="row mb-3">
+                        <div className="col-md-6">
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search by email or login..."
+                                    value={keyword}
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                />
+                                <button 
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => {
+                                        setPage(0);
+                                        fetchUsers();
+                                    }}
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="table-responsive">
+                        <table {...getTableProps()} className="table table-striped">
+                            <thead>
+                                {headerGroups.map(headerGroup => (
+                                    <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map(column => (
+                                            <th {...column.getHeaderProps()}>
+                                                {column.render('Header')}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                                {rows.map(row => {
+                                    prepareRow(row);
+                                    return (
+                                        <tr {...row.getRowProps()}>
+                                            {row.cells.map(cell => (
+                                                <td {...cell.getCellProps()}>
+                                                    {cell.render('Cell')}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <select 
+                                className="form-select"
+                                value={pageSize}
+                                onChange={(e) => {
+                                    setPageSize(Number(e.target.value));
+                                    setPage(0);
+                                }}
+                            >
+                                {[5, 10, 20, 50].map(size => (
+                                    <option key={size} value={size}>{size} per page</option>
+                                ))}
+                            </select>
+                        </div>
+                        
+                        <Pagination
+                            count={data.totalPages}
+                            page={page + 1}
+                            onChange={(_, newPage) => setPage(newPage - 1)}
+                            color="primary"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div className = "col-md-12 list">
-            <div className = "mt-3">
-                {"Items per Page: "}
-                <select onChange={handlePageSizeChange} value = {pageSize}>
-                    {pageSizes.map((size) => (
-                        <option key = {size} value = {size}>
-                            {size}
-                        </option>
-                    ))}
-                </select>
-
-                <Pagination
-                    color = "primary"
-                    className = "my-3"
-                    count = {count}
-                    page = {page}
-                    siblingCount = {1}
-                    boundaryCount = {1}
-                    variant = "outlined"
-                    onChange = {handlePageChange}
-                />
-            </div>
-
-            <table
-                className = "table table-striped table-bordered"
-                {...getTableProps()}
-            >
-
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render("Header")}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <td {...cell.getCellProps()}>
-                                            {cell.render("Cell")}
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-
-            </table>
-
-            <div className="mt-3">
-                {"Items per Page: "}
-                <select onChange={handlePageSizeChange} value={pageSize}>
-                    {pageSizes.map((size) => (
-                    <option key={size} value={size}>
-                        {size}
-                    </option>
-                    ))}
-                </select>
-
-                <Pagination
-                    color="primary"
-                    className="my-3"
-                    count={count}
-                    page={page}
-                    siblingCount={1}
-                    boundaryCount={1}
-                    variant="outlined"
-                    onChange={handlePageChange}
-                />
-            </div>    
-
-
-        </div>
-    </div>
-  )
-}
+    );
+};
 
 export default UserList;
