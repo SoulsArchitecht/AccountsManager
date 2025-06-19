@@ -1,5 +1,6 @@
 package ru.sshibko.AccountsManager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,7 +35,10 @@ public class User implements Serializable {
     @Column(name = "status", nullable = false, columnDefinition = "boolean default true")
     private boolean status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REFRESH)
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
+            cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}
+            , orphanRemoval = true)
     private List<Account> accountList;
 
     @Enumerated(EnumType.STRING)

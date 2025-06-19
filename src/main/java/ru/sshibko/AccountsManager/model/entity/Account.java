@@ -1,5 +1,6 @@
 package ru.sshibko.AccountsManager.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -69,6 +70,7 @@ public class Account implements Serializable {
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private boolean active;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
  //   @JsonIgnore
