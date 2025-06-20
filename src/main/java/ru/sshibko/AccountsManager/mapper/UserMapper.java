@@ -20,7 +20,6 @@ public class UserMapper implements Serializable {
                 .login(user.getLogin())
                 .password(user.getPassword())
                 .status(user.isStatus())
-                .accountList(user.getAccountList())
                 .role(user.getRole())
                 .build();
     }
@@ -41,7 +40,6 @@ public class UserMapper implements Serializable {
                 .login(userDto.getLogin())
                 .password(userDto.getPassword())
                 .status(userDto.isStatus())
-                .accountList(userDto.getAccountList())
                 .role(role)
                 .build();
     }

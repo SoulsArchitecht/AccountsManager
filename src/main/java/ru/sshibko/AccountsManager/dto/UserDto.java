@@ -2,10 +2,7 @@ package ru.sshibko.AccountsManager.dto;
 
 import lombok.*;
 import ru.sshibko.AccountsManager.model.entity.Role;
-import ru.sshibko.AccountsManager.model.entity.Account;
-
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +18,5 @@ public final class UserDto implements Serializable {
     private String login;
     private String password;
     private boolean status;
-    private List<Account> accountList;
     private Role role;
 }
