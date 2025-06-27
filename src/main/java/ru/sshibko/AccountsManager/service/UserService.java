@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,7 @@ import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.exception.AccountAccessException;
 import ru.sshibko.AccountsManager.exception.ResourceNotFoundException;
 import ru.sshibko.AccountsManager.exception.UnauthorizedAccessException;
+import ru.sshibko.AccountsManager.exception.UserAccessException;
 import ru.sshibko.AccountsManager.mapper.UserMapper;
 import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.model.entity.Role;
@@ -96,7 +98,7 @@ public class UserService implements CRUDService<UserDto> {
         userRepository.delete(user);
     }
 
-    public Page<User> findAllUsersPaged(String keyword, PageRequest pageRequest) {
+/*    public Page<User> findAllUsersPaged(String keyword, PageRequest pageRequest) {
         Page<User> userPage;
         if (keyword == null) {
             userPage = userRepository.findAll(pageRequest);
@@ -104,6 +106,26 @@ public class UserService implements CRUDService<UserDto> {
             userPage = userRepository.findUserByKeywordPaged(keyword, pageRequest);
         }
         return userPage;
+    }*/
+
+    public Page<UserDto> findAllUsersPaged(Pageable pageable) {
+        log.info("Finding all users");
+        User currentUser = getCurrentUser();
+        if (!isAdmin(currentUser)) {
+            throw new UserAccessException( "You do not have permission to access this resource");
+        }
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
+    }
+
+    public Page<UserDto> findAllUsersPagedWithKeyword(Pageable pageable, String keyword) {
+        log.info("Finding all users with keyword {} ", keyword);
+        User currentUser = getCurrentUser();
+        if (!isAdmin(currentUser)) {
+            throw new UserAccessException( "You do not have permission to access this resource");
+        }
+        return userRepository.findUserByKeywordPaged(keyword, pageable)
+                .map(userMapper::toDto);
     }
 
     public Collection<UserDto> findByKeyword(String keyword) {

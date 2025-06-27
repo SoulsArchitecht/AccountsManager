@@ -2,6 +2,7 @@ package ru.sshibko.AccountsManager.model.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +19,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             + "u.email LIKE %:keyword%"
             + " OR u.login LIKE %:keyword%";
 
+/*    @Query(value = searchQuery, nativeQuery = true)
+    Page<User> findUserByKeywordPaged(@Param("keyword") String keyword, PageRequest pageRequest);*/
+
     @Query(value = searchQuery, nativeQuery = true)
-    Page<User> findUserByKeywordPaged(@Param("keyword") String keyword, PageRequest pageRequest);
+    Page<User> findUserByKeywordPaged(String keyword, Pageable pageable);
 
     @Query(value = searchQuery, nativeQuery = true)
     List<User> findUserByKeyword(@Param("keyword") String keyword);

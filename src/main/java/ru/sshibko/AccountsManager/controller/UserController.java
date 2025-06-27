@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.PagedDataDto;
 import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.model.entity.User;
@@ -32,8 +34,8 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @GetMapping()
-    @Operation(summary = "get all user for ADMIN only")
+/*    @GetMapping()
+    @Operation(summary = "get all users for ADMIN only")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PagedDataDto<User> getAllAccountPaged(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -47,6 +49,21 @@ public class UserController {
         pagedDataDto.setTotal(pagedData.getTotalPages());
 
         return pagedDataDto;
+    }*/
+
+/*    @GetMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Page<UserDto> getAllUsersPaged(Pageable pageable) {
+        return userService.findAllUsersPaged(pageable);
+    }*/
+
+    @GetMapping()
+    @Operation(summary = "Getting for ADMIN all users paged with keyword")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Page<UserDto> getAllUsersPagedByKeyword(
+            @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
+            Pageable pageable) {
+        return userService.findAllUsersPagedWithKeyword(pageable, keyword);
     }
 
     @PostMapping()
