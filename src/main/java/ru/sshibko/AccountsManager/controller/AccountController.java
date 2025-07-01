@@ -25,11 +25,20 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping
+    @GetMapping("/")
     @Operation(summary = "Get current user accounts for current user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public Page<AccountDto> getAllCurrentUserAccounts(Pageable pageable) {
         return accountService.getAllAccountCurrentUser(pageable);
+    }
+
+    @GetMapping()
+    @Operation(summary = "Get account with keyword for current user")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public Page<AccountDto> getAllCurrentUserAccountsWithKeyword(
+            @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
+            Pageable pageable) {
+        return accountService.findByCurrentUserAndKeyword(keyword, pageable);
     }
 
     @GetMapping("/{id}")
@@ -39,7 +48,7 @@ public class AccountController {
         return accountService.getById(id);
     }
 
-    @GetMapping("/")
+/*    @GetMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PagedDataDto<Account> getAllAccountPaged(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -53,7 +62,7 @@ public class AccountController {
         pagedDataDto.setTotal(pagedData.getTotalPages());
 
         return pagedDataDto;
-    }
+    }*/
 
     @PostMapping
     @Operation(summary = "Create a new account by current User or ADMIN")

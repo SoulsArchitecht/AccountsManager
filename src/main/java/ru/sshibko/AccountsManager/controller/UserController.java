@@ -5,14 +5,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.sshibko.AccountsManager.dto.AccountDto;
-import ru.sshibko.AccountsManager.dto.PagedDataDto;
 import ru.sshibko.AccountsManager.dto.UserDto;
-import ru.sshibko.AccountsManager.model.entity.User;
 import ru.sshibko.AccountsManager.service.UserService;
 
 import java.util.Collection;
@@ -60,7 +56,7 @@ public class UserController {
     @GetMapping()
     @Operation(summary = "Getting for ADMIN all users paged with keyword")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Page<UserDto> getAllUsersPagedByKeyword(
+    public Page<UserDto> getAllUsersPagedWithKeyword(
             @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
             Pageable pageable) {
         return userService.findAllUsersPagedWithKeyword(pageable, keyword);
