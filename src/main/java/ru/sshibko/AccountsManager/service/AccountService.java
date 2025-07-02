@@ -151,6 +151,24 @@ public class AccountService implements CRUDService<AccountDto>{
         return accountMapper.toDto(updatedAccount);
     }
 
+    @Transactional
+    public AccountDto activateToggle(Long accountId) {
+        log.info("Toggling activation of account with ID {} ", accountId);
+        Account account = accountRepository.findById(accountId).orElseThrow(
+                () -> new ResourceNotFoundException((
+                        "Account with given id: " + accountId + "is not exists"))
+        );
+
+        User currentUser = userService.getCurrentUser();
+        if (!userService.isAdmin(currentUser) && !userService.isAccountOwner(account, currentUser)) {
+            throw new AccountAccessException( "You do not have permission to access this resource");
+        }
+
+        account.setActive(!account.isActive());
+        Account patchedAccount = accountRepository.save(account);
+        return accountMapper.toDto(patchedAccount);
+    }
+
     @Override
     @Transactional
     public void delete(Long accountId) {
@@ -160,19 +178,12 @@ public class AccountService implements CRUDService<AccountDto>{
                         "Account with given id: " + accountId + "is not exists"))
         );
 
-        //TODO maybe throw exception?
         User currentUser = userService.getCurrentUser();
         if (!userService.isAdmin(currentUser) && !userService.isAccountOwner(account, currentUser)) {
             throw new AccountAccessException( "You do not have permission to access this resource");
         }
-/*        if (currentUser != null && (currentUser.getId().equals(account.getUser().getId()) ||
-                currentUser.getRole() == Role.ROLE_ADMIN)) {
-                account.setActive(false);
-        }*/
-        //TODO resolve delete or deactivate
-        //accountRepository.delete(account);
-        account.setActive(false);
-        accountRepository.save(account);
+
+        accountRepository.delete(account);
         log.info("Account with ID {} deleted successfully!", accountId);
     }
 
@@ -200,6 +211,31 @@ public class AccountService implements CRUDService<AccountDto>{
                 .toList();
 
         return new PageImpl<>(accountDtos, pageable, accountList.getTotalElements());
+    }
+
+    public Page<AccountDto> findByCurrentUserWithKeywordAndStatus(
+            String keyword,
+            Boolean active,
+            Pageable pageable) {
+
+        log.info("Finding accounts by current user with keyword: {} and status: {}", keyword, active);
+
+        User currentUser = userService.getCurrentUser();
+
+        if (active != null) {
+            return accountRepository.findByCurrentUserWithKeywordAndStatus(
+                    currentUser.getId(),
+                    keyword,
+                    active,
+                    pageable
+            ).map(accountMapper::toDto);
+        } else {
+            return accountRepository.findByCurrentUserAndKeyword(
+                    currentUser.getId(),
+                    keyword,
+                    pageable
+            ).map(accountMapper::toDto);
+        }
     }
 
     public Page<AccountDto> getAllAccountCurrentUser(Pageable pageable) {

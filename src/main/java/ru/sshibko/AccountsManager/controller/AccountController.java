@@ -32,13 +32,23 @@ public class AccountController {
         return accountService.getAllAccountCurrentUser(pageable);
     }
 
-    @GetMapping()
+/*    @GetMapping()
     @Operation(summary = "Get account with keyword for current user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public Page<AccountDto> getAllCurrentUserAccountsWithKeyword(
             @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
             Pageable pageable) {
         return accountService.findByCurrentUserAndKeyword(keyword, pageable);
+    }*/
+
+    @GetMapping()
+    @Operation(summary = "Get account with keyword for current user")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public Page<AccountDto> getAllCurrentUserAccountsWithKeywordAndStatus(
+            @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
+            @RequestParam(value = "active", required = false, defaultValue = "true") Boolean active,
+            Pageable pageable) {
+        return accountService.findByCurrentUserWithKeywordAndStatus(keyword, active, pageable);
     }
 
     @GetMapping("/{id}")
@@ -79,10 +89,17 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "remove existing account by ID for USER account owner or ADMIN")
+    @Operation(summary = "Remove existing account by ID for USER account owner or ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public void deleteAccount(@PathVariable("id") Long accountId) {
         accountService.delete(accountId);
+    }
+
+    @PatchMapping("/{id}/activate")
+    @Operation(summary = " Setting activate existing account with pointed id to opposite value")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public AccountDto activateToggle(@PathVariable("id") Long accountId) {
+        return accountService.activateToggle(accountId);
     }
 
     @GetMapping("/search/{keyword}/")

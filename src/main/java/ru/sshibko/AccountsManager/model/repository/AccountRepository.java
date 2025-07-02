@@ -23,6 +23,19 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             AND (a.link LIKE %:keyword% OR a.description LIKE %:keyword)
             """;
 
+    String queryForCurrentUserWithKeywordAndStatus = """
+            SELECT a FROM Account a  WHERE a.user.id = :userId
+            AND (a.link LIKE %:keyword% OR a.description LIKE %:keyword)
+            AND a.active = :active
+            """;
+
+    @Query(queryForCurrentUserWithKeywordAndStatus)
+    Page<Account> findByCurrentUserWithKeywordAndStatus(
+            @Param("userId") Long userId,
+            @Param("keyword") String keyword,
+            @Param("active") Boolean active,
+            Pageable pageable);
+
     @Query(value = searchQuery, nativeQuery = true)
     Page<Account> findByKeywordPaged(@Param("keyword") String keyword, PageRequest pageRequest);
 
