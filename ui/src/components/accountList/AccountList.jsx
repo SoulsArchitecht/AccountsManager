@@ -3,7 +3,7 @@ import { getAllAccounts, deleteAccount, toggleActive } from '../../services/Acco
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useTable } from 'react-table';
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@mui/material/Pagination';
 import { useAuth } from '../../authContext/AuthContext';
 import '../accountList/AccountList.css';
 
@@ -195,22 +195,22 @@ const AccountList = () => {
             Header: 'Actions',
             accessor: 'actions',
             Cell: ({ row }) => (
-                <div>
+                <div className="actions-container">
                     <button 
                         onClick={() => navigate(`/edit-account/${row.original.id}`)}
-                        className="btn btn-warning btn-sm me-2"
+                        className="action-btn btn-edit"
                     >
                         Edit
                     </button>
                     <button 
                         onClick={() => toggleAccountStatus(row.original.id, row.original.active)}
-                        className={`btn btn-sm ${row.original.active ? 'btn-danger' : 'btn-success'}`}
+                        className={`action-btn ${row.original.active ? 'btn-deactivate' : 'btn-activate'}`}
                     >
                         {row.original.active ? 'Deactivate' : 'Activate'}
                     </button>
                     <button
                         onClick={() => removeAccount(row.original.id)}
-                        className="btn btn-danger btn-sm"
+                        className="action-btn btn-delete"
                     >
                         Delete
                     </button>    
@@ -233,7 +233,7 @@ const AccountList = () => {
     return (
         <div className="container mt-4">
             <div className="card">
-                <div className="card-header d-flex justify-content-between align-items-center margin-left: 40">
+                <div className="card-header d-flex justify-content-between align-items-center">
                     <h3>Accounts Management</h3>
                     <button 
                         onClick={() => navigate('/add-account')}

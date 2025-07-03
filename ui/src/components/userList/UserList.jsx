@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom'
 import { deleteUser, findByKeyword } from '../../services/UserService';
 import {format} from 'date-fns';
 import { useTable } from 'react-table';
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@mui/material/Pagination';
 import { useAuth } from '../../authContext/AuthContext';
 import Unauthorized from '../../common/Unauthorized';
 
