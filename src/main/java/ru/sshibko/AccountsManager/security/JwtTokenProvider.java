@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,22 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
+        String email = userDetails.getUsername();
+
+        String roleName = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse(null);
+
+        if (roleName == null) {
+            log.error("User {} has no assigned role", userDetails.getUsername());
+            throw new IllegalStateException("User " + userDetails.getUsername() + " has no assigned role");
+        }
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("role", roleName)
+                .claim("email", email)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
