@@ -38,7 +38,7 @@ const Header = () => {
                   <span className="ms-1">Home</span>
                 </Link>
               </li>
-          {user?.role?.inculdes('ROLE_ADMIN') && (
+          {user?.role?.includes('ROLE_ADMIN') && (
             <li className="nav-item">
               <Link to="/users" className="nav-link d-flex align-items-center">
                 <FaUsers className="me-1" />
@@ -56,7 +56,7 @@ const Header = () => {
               <li className="nav-item">
                 <Link to="/settings" className="nav-link d-flex align-items-center">
                   <FaCog className="me-1" />
-                  <span className="ms-1">Settings</span>
+                  <span className="ms-1">{user?.email}</span>
                 </Link>
               </li>
               <li className="nav-item">
