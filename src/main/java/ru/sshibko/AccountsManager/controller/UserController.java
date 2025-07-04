@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.service.UserService;
 
@@ -53,13 +54,23 @@ public class UserController {
         return userService.findAllUsersPaged(pageable);
     }*/
 
-    @GetMapping()
-    @Operation(summary = "Getting for ADMIN all users paged with keyword")
+    @GetMapping("/")
+    @Operation(summary = "Getting all users paged with keyword for ADMIN ")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Page<UserDto> getAllUsersPagedWithKeyword(
             @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
             Pageable pageable) {
         return userService.findAllUsersPagedWithKeyword(pageable, keyword);
+    }
+
+    @GetMapping()
+    @Operation(summary = "Get all users with keyword and status for ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Page<UserDto> getAllCurrentUserAccountsWithKeywordAndStatus(
+            @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
+            @RequestParam(value = "status", required = false, defaultValue = "true") Boolean status,
+            Pageable pageable) {
+        return userService.findAllUsersWithKeywordAndStatus(keyword, status, pageable);
     }
 
     @PostMapping()
@@ -81,6 +92,13 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteUser(@PathVariable("id") Long userId) {
         userService.delete(userId);
+    }
+
+    @PatchMapping("/{id}/activate")
+    @Operation(summary = " Setting activate existing user with pointed id to opposite value")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UserDto statusToggle(@PathVariable("id") Long accountId) {
+        return userService.statusToggle(accountId);
     }
 
     @GetMapping("/search/{keyword}")

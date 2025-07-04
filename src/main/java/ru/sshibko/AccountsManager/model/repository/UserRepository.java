@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.model.entity.User;
 
 import java.util.List;
@@ -19,8 +20,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
             + "u.email LIKE %:keyword%"
             + " OR u.login LIKE %:keyword%";
 
+    String queryForAdminGetAllUsersWithKeywordAndStatus = """
+            SELECT u FROM User u  WHERE
+            (u.email LIKE %:keyword% OR u.login LIKE %:keyword)
+            AND u.status = :status
+            """;
+
 /*    @Query(value = searchQuery, nativeQuery = true)
     Page<User> findUserByKeywordPaged(@Param("keyword") String keyword, PageRequest pageRequest);*/
+
+    Page<User> findAllUsersWithKeywordAndStatus(
+            @Param("keyword") String keyword,
+            @Param("status") Boolean status,
+            Pageable pageable);
 
     @Query(value = searchQuery, nativeQuery = true)
     Page<User> findUserByKeywordPaged(String keyword, Pageable pageable);

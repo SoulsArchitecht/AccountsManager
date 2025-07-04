@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.exception.AccountAccessException;
 import ru.sshibko.AccountsManager.exception.ResourceNotFoundException;
@@ -98,6 +99,25 @@ public class UserService implements CRUDService<UserDto> {
         userRepository.delete(user);
     }
 
+    @Transactional
+    public UserDto statusToggle(Long userId) {
+        log.info("Toggling status of user with ID {} ", userId);
+
+        User deactivatingUser = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException((
+                        "User with given id: " + userId + "is not exists"
+                        ))
+        );
+        User currentUser = getCurrentUser();
+        if (!isAdmin(currentUser)) {
+            throw new AccountAccessException( "You do not have permission to access this resource");
+        }
+
+        deactivatingUser.setStatus(!deactivatingUser.isStatus());
+        User deativatedUser = userRepository.save(deactivatingUser);
+        return userMapper.toDto(deativatedUser);
+    }
+
 /*    public Page<User> findAllUsersPaged(String keyword, PageRequest pageRequest) {
         Page<User> userPage;
         if (keyword == null) {
@@ -126,6 +146,32 @@ public class UserService implements CRUDService<UserDto> {
         }
         return userRepository.findUserByKeywordPaged(keyword, pageable)
                 .map(userMapper::toDto);
+    }
+
+    public Page<UserDto> findAllUsersWithKeywordAndStatus(
+            String keyword,
+            Boolean status,
+            Pageable pageable) {
+
+        log.info("Finding all users  with keyword: {} and status: {}", keyword, status);
+
+        User currentUser = getCurrentUser();
+        if (!isAdmin(currentUser)) {
+            throw new UserAccessException( "You do not have permission to access this resource");
+        }
+
+        if (status != null) {
+            return userRepository.findAllUsersWithKeywordAndStatus(
+                    keyword,
+                    status,
+                    pageable
+            ).map(userMapper::toDto);
+        } else {
+            return userRepository.findUserByKeywordPaged(
+                    keyword,
+                    pageable
+            ).map(userMapper::toDto);
+        }
     }
 
     public Collection<UserDto> findByKeyword(String keyword) {

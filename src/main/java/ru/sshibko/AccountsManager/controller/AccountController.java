@@ -42,7 +42,7 @@ public class AccountController {
     }*/
 
     @GetMapping()
-    @Operation(summary = "Get account with keyword for current user")
+    @Operation(summary = "Get accounts with keyword and active for current user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public Page<AccountDto> getAllCurrentUserAccountsWithKeywordAndStatus(
             @RequestParam(value = "keyword", required = false, defaultValue = "%") String keyword,
