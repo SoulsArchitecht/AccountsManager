@@ -29,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 /*    @Query(value = searchQuery, nativeQuery = true)
     Page<User> findUserByKeywordPaged(@Param("keyword") String keyword, PageRequest pageRequest);*/
 
+    @Query(value = queryForAdminGetAllUsersWithKeywordAndStatus)
     Page<User> findAllUsersWithKeywordAndStatus(
             @Param("keyword") String keyword,
             @Param("status") Boolean status,
