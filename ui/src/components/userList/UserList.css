@@ -1,0 +1,89 @@
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+}
+.sortable-header:hover {
+    text-decoration: underline;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/*.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+} */
+
+/* Button container styles */
+.actions-container {
+    display: flex;
+    gap: 0.5rem; /* Отступ между кнопками */
+    flex-wrap: wrap; /* Если места мало - кнопки переносятся */
+}
+
+/* Basic button styles */
+.action-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap; 
+}
+
+/* Pointing styles */
+.action-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Buttons */
+.btn-edit {
+    background-color: #ffc107; 
+    color: #212529;
+}
+
+.btn-deactivate {
+    background-color: #6f42c1; 
+}
+
+.btn-activate {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #dc3545; 
+    color: white;
+}
+
+/* Card header styles */
+.card-header {
+    padding: 1rem 1.5rem;
+}
+
+.card-header h3 {
+    margin-left: 1rem; 
+    margin-bottom: 0; 
+}
+
+@media (max-width: 768px) {
+    .actions-container {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+}
