@@ -45,6 +45,11 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true)
+    private UserInfo userInfo;
+
     @Override
     public String toString() {
         return "User{" +

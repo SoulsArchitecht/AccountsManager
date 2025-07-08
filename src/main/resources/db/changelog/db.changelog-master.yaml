@@ -11,6 +11,8 @@ databaseChangeLog:
       file: db/changelog/changeset/V1/create-foreign-keys.yaml
   - include:
       file: db/changelog/changeset/V1/05-03-2025-role-changes.yaml
+  - include:
+      file: db/changelog/changeset/V1/07.07.2025-create-user-info-table.yaml
 #  - include:
 #      file: db/changelog/changeset/V1/data-insertion.yaml
 #  - include:

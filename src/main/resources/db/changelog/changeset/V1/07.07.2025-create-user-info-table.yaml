@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-create-user-info-table
+      author: Sergey Shibko
+      changes:
+        - createTable:
+            tableName: user_info
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: birth_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: country
+                  type: VARCHAR(65)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phone_number
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: optional_email
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: registration_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+
