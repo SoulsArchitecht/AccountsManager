@@ -48,8 +48,20 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
+                  name: avatar_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
                   name: registration_date
                   type: TIMESTAMP
                   constraints:
                     nullable: true
 
+        - addForeignKeyConstraint:
+            baseTableName: user_info
+            baseColumnNames: user_id
+            constraintName: fk_user_info_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
