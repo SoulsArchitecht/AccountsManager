@@ -11,7 +11,10 @@ import HomePage from './components/homePage/HomePage'
 import LoginForm from './components/loginForm/LoginFrom';
 import RegisterForm from './components/registerForm/RegisterForm';
 import { AuthProvider } from './authContext/AuthContext';
-import { PrivateRoute, PublicRoute } from './authRoutes/AuthRoutes'
+import { PrivateRoute, PublicRoute } from './authRoutes/AuthRoutes';
+import UserInfo from './components/userInfo/UserInfo';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -35,7 +38,7 @@ function App() {
                 <Route path='/add-account' element={<AddAccount />} />
                 <Route path='/edit-account/:id' element={<AddAccount />} />
                 <Route path='/users' element={<UserList />} />
-                <Route path='/settings' element={<div>User Settings Page</div>} />
+                <Route path='/settings' element={<UserInfo/>} />
               </Route>
 
               {/* Common routes */}
@@ -44,7 +47,17 @@ function App() {
           <Footer/>
         </AuthProvider>
       </BrowserRouter>
-
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

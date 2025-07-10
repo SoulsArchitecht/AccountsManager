@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../authContext/AuthContext';
 import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog, FaSignOutAlt, FaSignInAlt, FaKey } from 'react-icons/fa';
+import '../header/Header.css';
 
 const Header = () => {
   const { token, logout, user } = useAuth();
@@ -55,7 +56,21 @@ const Header = () => {
             <>
               <li className="nav-item">
                 <Link to="/settings" className="nav-link d-flex align-items-center">
-                  <FaCog className="me-1" />
+                  {/* <FaCog className="me-1" /> */}
+                  {user?.avatarUrl ? (
+                    <img 
+                      src={`/uploads/${user.avatarUrl}`} 
+                      alt="User Avatar"
+                      className="rounded-circle me-2"
+                      width="24"
+                      height="24"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div className="avatar-placeholder me-2">
+                      {user?.email?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <span className="ms-1">{user?.email}</span>
                 </Link>
               </li>
