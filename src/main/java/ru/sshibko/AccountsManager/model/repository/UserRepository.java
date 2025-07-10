@@ -1,13 +1,11 @@
 package ru.sshibko.AccountsManager.model.repository;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.sshibko.AccountsManager.model.entity.Account;
 import ru.sshibko.AccountsManager.model.entity.User;
 
 import java.util.List;
@@ -41,6 +39,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = searchQuery, nativeQuery = true)
     List<User> findUserByKeyword(@Param("keyword") String keyword);
 
+    //@EntityGraph(attributePaths = {}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<User> findUserByEmail(String email);
 
     boolean existsByEmail(String email);

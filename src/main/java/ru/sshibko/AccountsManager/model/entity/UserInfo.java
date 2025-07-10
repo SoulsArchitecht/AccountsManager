@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_details")
+@Table(name = "user_info")
 @Builder
 public class UserInfo implements Serializable {
 
