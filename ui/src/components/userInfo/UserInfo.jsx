@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../authContext/AuthContext';
 import { getUserInfo, updateUserInfo, uploadAvatar } from '../../services/UserService';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
@@ -11,7 +11,7 @@ const UserInfo = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm();
+  const { register, handleSubmit, reset, formState: { errors }, setValue, control, watch } = useForm();
 
   const [data, setData] = useState({
     userInfo: null,
@@ -195,15 +195,24 @@ const UserInfo = () => {
                     <div className="form-group mb-3">
                       <label className="form-label">Birth Date</label>
                       {isEditing ? (
-                        <DatePicker
-                          selected={data.userInfo?.birthDate ? new Date(data.userInfo.birthDate) : null}
-                          onChange={(date) => setValue('birthDate', date)}
-                          dateFormat="yyyy-MM-dd"
-                          className="form-control form-control-sm"
-                          showYearDropdown
-                          dropdownMode="select"
-                          peekNextMonth
-                          showMonthDropdown
+                        <Controller
+                          name="birthDate"
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              selected={field.value}
+                              onChange={(date) => field.onChange(date)}
+                              dateFormat="yyyy-MM-dd"
+                              className="form-control form-control-sm"
+                              placeholderText="Select birth date"
+                              showYearDropdown
+                              dropdownMode="select"
+                              peekNextMonth
+                              showMonthDropdown
+                              isClearable
+                              withPortal
+                            />
+                          )}
                         />
                       ) : (
                         <div className="form-control-static">
