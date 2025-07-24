@@ -57,6 +57,7 @@ public class UserInfoService {
         return userInfoMapper.toDto(updatedUserInfo);
     }
 
+    @Transactional
     public String uploadAvatar(MultipartFile file) {
         User user = userService.getCurrentUser();
         UserInfo userInfo = userInfoRepository.findByUserId(user.getId());

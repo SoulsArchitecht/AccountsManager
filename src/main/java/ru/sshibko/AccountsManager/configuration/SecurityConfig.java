@@ -47,7 +47,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**", "/swagger-ui/**"))*/
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/auth/**", "/v3/api-docs/**",
+                                "/swagger-ui/**", "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configurer -> configurer

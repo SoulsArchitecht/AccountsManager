@@ -2,6 +2,8 @@ package ru.sshibko.AccountsManager.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,9 +14,12 @@ import ru.sshibko.AccountsManager.dto.UpdateUserInfoRequest;
 import ru.sshibko.AccountsManager.dto.UserInfoDto;
 import ru.sshibko.AccountsManager.service.UserInfoService;
 
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/users/info")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "UserInfo", description = "User Info Management API")
 public class UserInfoController {
 
     private final UserInfoService userInfoService;

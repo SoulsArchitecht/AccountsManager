@@ -16,24 +16,24 @@ import java.time.LocalDateTime;
 @Builder
 public class UpdateUserInfoRequest {
 
-    @NotBlank
-    @Size(min = 1, max = 255)
+    //@NotBlank
+    //@Size(min = 1, max = 255)
     private String firstName;
 
-    @NotBlank
-    @Size(min = 1, max = 255)
+    //@NotBlank
+    //@Size(min = 1, max = 255)
     private String lastName;
 
     @Past
     private LocalDate birthDate;
 
-    @NotBlank
-    @Size(min = 1, max = 255)
+    //@NotBlank
+    //@Size(min = 1, max = 255)
     private String country;
 
     //TODO anno filter
     private String phoneNumber;
 
-    @Email
+    //@Email
     private String optionalEmail;
 }
