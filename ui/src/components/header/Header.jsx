@@ -4,7 +4,7 @@ import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog, FaSignOutAlt, FaSig
 import '../header/Header.css';
 
 const Header = () => {
-  const { token, logout, user } = useAuth();
+  const { token, logout, user, userInfo } = useAuth();
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark px-4">
@@ -57,9 +57,9 @@ const Header = () => {
               <li className="nav-item">
                 <Link to="/settings" className="nav-link d-flex align-items-center">
                   {/* <FaCog className="me-1" /> */}
-                  {user?.avatarUrl ? (
+                  {user?.userInfo?.avatarUrl ? (
                     <img 
-                      src={`/uploads/${user.avatarUrl}`} 
+                      src={`http://localhost:8088/uploads/${user?.userInfo.avatarUrl}`} 
                       alt="User Avatar"
                       className="rounded-circle me-2"
                       width="24"

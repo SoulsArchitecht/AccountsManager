@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import './UserInfo.css';
 
 const UserInfo = () => {
-  const { user } = useAuth();
+  const { user, updateUserInfo } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const { register, handleSubmit, reset, formState: { errors }, setValue, control, watch } = useForm();
@@ -49,6 +49,16 @@ const UserInfo = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (!file.type.match('image.*')) {
+      toast.error('Please select an image file (JPEG, PNG');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size should be less than 10MB');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setAvatarPreview(reader.result);
@@ -56,13 +66,14 @@ const UserInfo = () => {
     reader.readAsDataURL(file);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const response = await uploadAvatar(formData);
-      toast.success('Avatar updated successfully');
-      fetchUserInfo();
+      const response = await uploadAvatar(file);
+      if (response.status === 200) {
+        toast.success('Avatar uploaded successfully');
+        fetchUserInfo();
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to upload avatar');
+      console.error('Avatar upload error:', error);
+      toast.error(error.response?.data?.message || 'Failed to upload avatar. Please try again');
     }
   };
 
@@ -104,11 +115,13 @@ const UserInfo = () => {
               <div className="col-md-3 text-center">
                 <div className="mb-3 avatar-container">
                   <img
-                    src={avatarPreview || (data.userInfo?.avatarUrl 
-                      ? `/uploads/${data.userInfo.avatarUrl}` 
-                      : 'https://via.placeholder.com/150')}
+                    src={`http://localhost:8088/uploads/${user.userInfo.avatarUrl}`}
                     alt="Avatar"
                     className="rounded-circle avatar-img"
+                    //onError={(e) => {
+                      //e.target.onError = null;
+                      //e.target.src = '/default-avatar.jpg';
+                    //}}
                   />
                 </div>
                 {isEditing && (

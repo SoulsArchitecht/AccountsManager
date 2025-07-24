@@ -2,6 +2,10 @@ import { createContext, useState, useEffect, useContext, useCallback } from 'rea
 import { useNavigate } from 'react-router-dom'; // Оставил, если вам нужна навигация внутри контекста
 import { login as authLogin, register as authRegister } from '../services/AuthService'; // Проверьте путь
 import { jwtDecode } from 'jwt-decode'; 
+//import { getUserInfo } from '../../src/services/UserService/UserService';
+import axios from 'axios';
+
+const USER_REST_API_BASE_URL = "http://localhost:8088/users";
 
 const AuthContext = createContext();
 
@@ -12,14 +16,18 @@ export const AuthProvider = ({ children }) => {
     //const navigate = useNavigate(); 
 
     // useCallback, чтобы функция не пересоздавалась на каждом рендере
-    const decodeAndSetUser = useCallback((jwtToken) => {
+    const decodeAndSetUser = useCallback(async (jwtToken) => {
         if (jwtToken) {
             try {
                 const decoded = jwtDecode(jwtToken);
                 if (decoded && decoded.email && decoded.role) {
+                    const userInfoResponse = await axios.get(`${USER_REST_API_BASE_URL}/info/me`, {
+                        headers: { 'Authorization': `Bearer ${jwtToken}`}
+                    });
                     setUser({
                         email: decoded.email,
-                        role: decoded.role // 'ROLE_USER' или 'ROLE_ADMIN'
+                        role: decoded.role,
+                        userInfo: userInfoResponse.data
                     });
                 } else {
                     console.warn("JWT токен декодирован, но отсутствуют ожидаемые поля 'email' или 'role'.");
@@ -57,15 +65,67 @@ export const AuthProvider = ({ children }) => {
               const response = await authLogin(email, password);
               const newToken = response.data.token; 
               setToken(newToken); 
-              // navigate('/'); 
+              
+              const userInfoResponse = await axios.get(`${USER_REST_API_BASE_URL}/info/me`, {
+                headers: {'Authorization': `Bearer ${newToken}`}
+              });
+
+              const decoded = jwtDecode(newToken);
+              setUser({
+                email: decoded.email,
+                role: decoded.role,
+                userInfo: userInfoResponse.data
+              });
+
               return { success: true };
           } catch (error) {
               console.error('Ошибка входа:', error);
               // In case of a login error, you can also clear the token if it was
               // setToken(null);
-              return { success: false, error: error.message };
+              return { 
+                success: false,
+                error: error.message 
+            };
           }
       };
+
+      const updateUserInfo = (newUserInfo) => {
+        setUser(prev => ({
+            ...prev,
+            userInfo: {
+                ...prev.userInfo,
+                ...newUserInfo
+            }
+        }));
+      };
+
+      const updateAvatar = async (file) => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await axios.post(`${USER_REST_API_BASE_URL}/info/me/avatar`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            setUser(prev => ({
+                ...prev,
+                userInfo: {
+                    ...prev.userInfo,
+                    avatarUrl: response.data
+                }
+            }));
+            return {success: true};
+        } catch (error) {
+            return {
+                success: null,
+                error: error.response?.data?.message || 'Upload failded'
+            }
+        }
+      }
   
       const register = async (email, password, loginName) => { 
           try {
@@ -88,7 +148,8 @@ export const AuthProvider = ({ children }) => {
       };
   
       return (
-          <AuthContext.Provider value={{ user, token, login, register, logout, loading }}>
+          <AuthContext.Provider value={{ user, token, login, register, logout, loading,
+           updateUserInfo, updateAvatar }}>
               {children}
           </AuthContext.Provider>
       );
