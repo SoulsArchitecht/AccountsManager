@@ -1,0 +1,22 @@
+name: CI for AccountManagerSystem project
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+  
+jobs:
+    test-work:
+        runs-on: ubuntu-latest
+        
+        steps:
+        -   name: Checkout code
+            uses: actions/checkout@v3
+            
+        -   name: Say Checkout
+            run: echo "Checkout here you are"
+            
+        -   name: Show date
+            run: date
+
