@@ -1,164 +1,145 @@
 import { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // Оставил, если вам нужна навигация внутри контекста
-import { login as authLogin, register as authRegister } from '../services/AuthService'; // Проверьте путь
-import { jwtDecode } from 'jwt-decode'; 
-//import { getUserInfo } from '../../src/services/UserService/UserService';
+import { login as authLogin, register as authRegister } from '../services/AuthService';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import {
+  updateUserInfo as serviceUpdateUserInfo,
+  uploadAvatar as serviceUploadAvatar,
+  getUserInfo as serviceGetUserInfo
+} from '../services/UserService';
 
 const USER_REST_API_BASE_URL = "http://localhost:8088/users";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const [loading, setLoading] = useState(true); 
-    //const navigate = useNavigate(); 
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [loading, setLoading] = useState(true);
 
-    // useCallback, чтобы функция не пересоздавалась на каждом рендере
-    const decodeAndSetUser = useCallback(async (jwtToken) => {
-        if (jwtToken) {
-            try {
-                const decoded = jwtDecode(jwtToken);
-                if (decoded && decoded.email && decoded.role) {
-                    const userInfoResponse = await axios.get(`${USER_REST_API_BASE_URL}/info/me`, {
-                        headers: { 'Authorization': `Bearer ${jwtToken}`}
-                    });
-                    setUser({
-                        email: decoded.email,
-                        role: decoded.role,
-                        userInfo: userInfoResponse.data
-                    });
-                } else {
-                    console.warn("JWT токен декодирован, но отсутствуют ожидаемые поля 'email' или 'role'.");
-                    // Token not valid without nesseccary fields
-                    setToken(null);
-                    localStorage.removeItem('token');
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error("Не удалось декодировать токен или токен невалиден:", error);
-                // Token expired or corrupted - remove it
-                setToken(null);
-                localStorage.removeItem('token');
-                setUser(null);
-            }
+  const decodeAndSetUser = useCallback(async (jwtToken) => {
+    if (jwtToken) {
+      try {
+        const decoded = jwtDecode(jwtToken);
+        if (decoded && decoded.email && decoded.role) {
+          const userInfoResponse = await serviceGetUserInfo(jwtToken);
+          setUser({
+            email: decoded.email,
+            role: decoded.role,
+            userInfo: userInfoResponse.data
+          });
         } else {
-            setUser(null); // No token -> no user
+          console.warn("JWT токен декодирован, но отсутствуют ожидаемые поля 'email' или 'role'.");
+          setToken(null);
+          localStorage.removeItem('token');
+          setUser(null);
         }
-    }, []);
+      } catch (error) {
+        console.error("Не удалось декодировать токен или токен невалиден:", error);
+        setToken(null);
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
+  }, []);
 
-    // Хук запускается при изменении токена или при монтировании компонента
-    useEffect(() => {
-        if (token) {
-            localStorage.setItem('token', token);
-            decodeAndSetUser(token); 
-          } else {
-              localStorage.removeItem('token');
-              setUser(null); 
-          }
-          setLoading(false); 
-      }, [token, decodeAndSetUser]); 
-  
-      const login = async (email, password) => {
-          try {
-              const response = await authLogin(email, password);
-              const newToken = response.data.token; 
-              setToken(newToken); 
-              
-              const userInfoResponse = await axios.get(`${USER_REST_API_BASE_URL}/info/me`, {
-                headers: {'Authorization': `Bearer ${newToken}`}
-              });
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('token', token);
+      decodeAndSetUser(token);
+    } else {
+      localStorage.removeItem('token');
+      setUser(null);
+      setLoading(false);
+    }
+  }, [token, decodeAndSetUser]);
 
-              const decoded = jwtDecode(newToken);
-              setUser({
-                email: decoded.email,
-                role: decoded.role,
-                userInfo: userInfoResponse.data
-              });
+  const login = async (email, password) => {
+    try {
+      const response = await authLogin(email, password);
+      const newToken = response.data.token;
+      setToken(newToken);
+      const userInfoResponse = await serviceGetUserInfo(newToken);
+      const decoded = jwtDecode(newToken);
+      setUser({
+        email: decoded.email,
+        role: decoded.role,
+        userInfo: userInfoResponse.data
+      });
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка входа:', error);
+      return { success: false, error: error.message };
+    }
+  };
 
-              return { success: true };
-          } catch (error) {
-              console.error('Ошибка входа:', error);
-              // In case of a login error, you can also clear the token if it was
-              // setToken(null);
-              return { 
-                success: false,
-                error: error.message 
-            };
-          }
-      };
+  const updateUserInfo = async (newUserInfo) => {
+    try {
+      const response = await serviceUpdateUserInfo({
+        ...newUserInfo,
+        birthDate: newUserInfo.birthDate?.split('T')[0] // формат YYYY-MM-DD
+      });
+      setUser(prev => ({
+        ...prev,
+        userInfo: response.data
+      }));
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to update user info:', error);
+      return { success: false, error: error.response?.data?.message || 'Update failed' };
+    }
+  };
 
-      const updateUserInfo = (newUserInfo) => {
-        setUser(prev => ({
-            ...prev,
-            userInfo: {
-                ...prev.userInfo,
-                ...newUserInfo
-            }
-        }));
-      };
-
-      const updateAvatar = async (file) => {
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const response = await axios.post(`${USER_REST_API_BASE_URL}/info/me/avatar`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            setUser(prev => ({
-                ...prev,
-                userInfo: {
-                    ...prev.userInfo,
-                    avatarUrl: response.data
-                }
-            }));
-            return {success: true};
-        } catch (error) {
-            return {
-                success: null,
-                error: error.response?.data?.message || 'Upload failded'
-            }
+  const updateAvatar = async (file) => {
+    try {
+      const response = await serviceUploadAvatar(file);
+      setUser(prev => ({
+        ...prev,
+        userInfo: {
+          ...prev.userInfo,
+          avatarUrl: response.data
         }
-      }
-  
-      const register = async (email, password, loginName) => { 
-          try {
-              const response = await authRegister(email, password, loginName);
-              const newToken = response.data.token;
-              setToken(newToken); 
-              // navigate('/'); 
-              return { success: true };
-          } catch (error) {
-              console.error('Ошибка регистрации:', error);
-              // setToken(null);
-              return { success: false, error: error.message };
-          }
+      }));
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Upload failed'
       };
-  
-      const logout = () => {
-          setToken(null); // Will update the 'token' state to null and call 'useEffect'
-          // navigate('/'); 
-          return { success: true };
-      };
-  
-      return (
-          <AuthContext.Provider value={{ user, token, login, register, logout, loading,
-           updateUserInfo, updateAvatar }}>
-              {children}
-          </AuthContext.Provider>
-      );
+    }
   };
-  
-  export const useAuth = () => {
-      const context = useContext(AuthContext);
-      if (!context) {
-          throw new Error('useAuth должен использоваться внутри AuthProvider');
-      }
-      return context;
+
+  const register = async (email, password, loginName) => {
+    try {
+      const response = await authRegister(email, password, loginName);
+      const newToken = response.data.token;
+      setToken(newToken);
+      return { success: true };
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      return { success: false, error: error.message };
+    }
   };
+
+  const logout = () => {
+    setToken(null);
+    return { success: true };
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, register, logout, loading, updateUserInfo, updateAvatar }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth должен использоваться внутри AuthProvider');
+  }
+  return context;
+};

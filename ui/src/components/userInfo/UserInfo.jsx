@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../authContext/AuthContext';
-import { getUserInfo, updateUserInfo, uploadAvatar } from '../../services/UserService';
+import { getUserInfo, uploadAvatar } from '../../services/UserService';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,69 +11,43 @@ const UserInfo = () => {
   const { user, updateUserInfo } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const { register, handleSubmit, reset, formState: { errors }, setValue, control, watch } = useForm();
 
-  const [data, setData] = useState({
-    userInfo: null,
-    loading: true,
-    error: null
-  });
+  const { register, handleSubmit, reset, formState: { errors }, control } = useForm();
 
   useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  const fetchUserInfo = async () => {
-    try {
-      setData(prev => ({ ...prev, loading: true, error: null }));
-      const response = await getUserInfo();
-      setData({
-        userInfo: response.data,
-        loading: false,
-        error: null
-      });
+    if (user?.userInfo) {
       reset({
-        ...response.data,
-        birthDate: response.data.birthDate ? new Date(response.data.birthDate) : null
-      });
-    } catch (error) {
-      setData({
-        userInfo: null,
-        loading: false,
-        error: error.response?.data?.message || 'Failed to fetch user info'
+        firstName: user.userInfo.firstName || '',
+        lastName: user.userInfo.lastName || '',
+        optionalEmail: user.userInfo.optionalEmail || '',
+        birthDate: user.userInfo.birthDate ? new Date(user.userInfo.birthDate) : null,
+        phone: user.userInfo.phoneNumber || '', 
+        country: user.userInfo.country || ''
       });
     }
-  };
+  }, [user, reset]);
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (!file.type.match('image.*')) {
-      toast.error('Please select an image file (JPEG, PNG');
+      toast.error('Please select an image file (JPEG, PNG)');
       return;
     }
-
     if (file.size > 10 * 1024 * 1024) {
       toast.error('File size should be less than 10MB');
       return;
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatarPreview(reader.result);
-    };
+    reader.onloadend = () => setAvatarPreview(reader.result);
     reader.readAsDataURL(file);
 
     try {
-      const response = await uploadAvatar(file);
-      if (response.status === 200) {
-        toast.success('Avatar uploaded successfully');
-        fetchUserInfo();
-      }
+      await uploadAvatar(file);
+      toast.success('Avatar uploaded successfully');
     } catch (error) {
-      console.error('Avatar upload error:', error);
-      toast.error(error.response?.data?.message || 'Failed to upload avatar. Please try again');
+      toast.error(error.response?.data?.message || 'Failed to upload avatar');
     }
   };
 
@@ -81,18 +55,17 @@ const UserInfo = () => {
     try {
       await updateUserInfo({
         ...formData,
+        phoneNumber: formData.phone, 
         birthDate: formData.birthDate?.toISOString().split('T')[0]
       });
       toast.success('Profile updated successfully');
       setIsEditing(false);
-      fetchUserInfo();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update profile');
     }
   };
 
-  if (data.loading) return <div className="text-center mt-4">Loading...</div>;
-  if (data.error) return <div className="alert alert-danger">{data.error}</div>;
+  if (!user || !user.userInfo) return <div className="text-center mt-4">Loading...</div>;
 
   return (
     <div className="container mt-4">
@@ -100,7 +73,7 @@ const UserInfo = () => {
         <div className="card-header d-flex justify-content-between align-items-center">
           <h3 className="mb-0">User Profile</h3>
           {!isEditing && (
-            <button 
+            <button
               className="btn btn-primary btn-sm"
               onClick={() => setIsEditing(true)}
             >
@@ -108,7 +81,6 @@ const UserInfo = () => {
             </button>
           )}
         </div>
-
         <div className="card-body">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="row mb-4">
@@ -118,10 +90,6 @@ const UserInfo = () => {
                     src={`http://localhost:8088/uploads/${user.userInfo.avatarUrl}`}
                     alt="Avatar"
                     className="rounded-circle avatar-img"
-                    //onError={(e) => {
-                      //e.target.onError = null;
-                      //e.target.src = '/default-avatar.jpg';
-                    //}}
                   />
                 </div>
                 {isEditing && (
@@ -139,7 +107,6 @@ const UserInfo = () => {
                   </div>
                 )}
               </div>
-
               <div className="col-md-9">
                 <div className="row">
                   <div className="col-md-6">
@@ -147,44 +114,35 @@ const UserInfo = () => {
                       <label className="form-label">First Name</label>
                       {isEditing ? (
                         <input
-                          {...register('firstName', { required: 'First name is required' })}
-                          className={`form-control form-control-sm ${errors.firstName ? 'is-invalid' : ''}`}
+                          {...register('firstName')}
+                          className="form-control form-control-sm"
                         />
                       ) : (
-                        <div className="form-control-static">{data.userInfo?.firstName || '-'}</div>
-                      )}
-                      {errors.firstName && (
-                        <div className="invalid-feedback">{errors.firstName.message}</div>
+                        <div className="form-control-static">{user.userInfo.firstName || '-'}</div>
                       )}
                     </div>
                   </div>
-
                   <div className="col-md-6">
                     <div className="form-group mb-3">
                       <label className="form-label">Last Name</label>
                       {isEditing ? (
                         <input
-                          {...register('lastName', { required: 'Last name is required' })}
-                          className={`form-control form-control-sm ${errors.lastName ? 'is-invalid' : ''}`}
+                          {...register('lastName')}
+                          className="form-control form-control-sm"
                         />
                       ) : (
-                        <div className="form-control-static">{data.userInfo?.lastName || '-'}</div>
-                      )}
-                      {errors.lastName && (
-                        <div className="invalid-feedback">{errors.lastName.message}</div>
+                        <div className="form-control-static">{user.userInfo.lastName || '-'}</div>
                       )}
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
                       <label className="form-label">Main Email</label>
-                      <div className="form-control-static text-muted">{user?.email}</div>
+                      <div className="form-control-static text-muted">{user.email}</div>
                     </div>
                   </div>
-
                   <div className="col-md-6">
                     <div className="form-group mb-3">
                       <label className="form-label">Additional Email</label>
@@ -195,14 +153,11 @@ const UserInfo = () => {
                           className="form-control form-control-sm"
                         />
                       ) : (
-                        <div className="form-control-static">
-                          {data.userInfo?.optionalEmail || '-'}
-                        </div>
+                        <div className="form-control-static">{user.userInfo.optionalEmail || '-'}</div>
                       )}
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
@@ -214,7 +169,7 @@ const UserInfo = () => {
                           render={({ field }) => (
                             <DatePicker
                               selected={field.value}
-                              onChange={(date) => field.onChange(date)}
+                              onChange={field.onChange}
                               dateFormat="yyyy-MM-dd"
                               className="form-control form-control-sm"
                               placeholderText="Select birth date"
@@ -229,22 +184,20 @@ const UserInfo = () => {
                         />
                       ) : (
                         <div className="form-control-static">
-                          {data.userInfo?.birthDate ? new Date(data.userInfo.birthDate).toLocaleDateString() : '-'}
+                          {user.userInfo.birthDate ? new Date(user.userInfo.birthDate).toLocaleDateString() : '-'}
                         </div>
                       )}
                     </div>
                   </div>
-
                   <div className="col-md-6">
                     <div className="form-group mb-3">
                       <label className="form-label">Registration Date</label>
                       <div className="form-control-static">
-                        {new Date(data.userInfo?.registrationDate).toLocaleDateString()}
+                        {new Date(user.userInfo.registrationDate).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
@@ -255,11 +208,10 @@ const UserInfo = () => {
                           className="form-control form-control-sm"
                         />
                       ) : (
-                        <div className="form-control-static">{data.userInfo?.phone || '-'}</div>
+                        <div className="form-control-static">{user.userInfo.phoneNumber || '-'}</div>
                       )}
                     </div>
                   </div>
-
                   <div className="col-md-6">
                     <div className="form-group mb-3">
                       <label className="form-label">Country</label>
@@ -269,12 +221,11 @@ const UserInfo = () => {
                           className="form-control form-control-sm"
                         />
                       ) : (
-                        <div className="form-control-static">{data.userInfo?.country || '-'}</div>
+                        <div className="form-control-static">{user.userInfo.country || '-'}</div>
                       )}
                     </div>
                   </div>
                 </div>
-
                 {isEditing && (
                   <div className="d-flex justify-content-end gap-2 mt-3">
                     <button
