@@ -33,7 +33,7 @@ public class UserInfoController {
 
     @PutMapping("/me")
     @Operation(summary = "Updating user details for owner only")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public UserInfoDto updateCurrentUserInfo(
             @Valid @RequestBody UpdateUserInfoRequest request) {
         return userInfoService.updateCurrentUserInfo(request);
@@ -41,7 +41,7 @@ public class UserInfoController {
 
     @PostMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Uploading avatar for owner")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public String uploadAvatar(
             @Parameter(description = "Avatar image file")
             @RequestParam("file") MultipartFile file) {
