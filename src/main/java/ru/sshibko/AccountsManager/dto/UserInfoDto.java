@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class UserInfoDto implements Serializable {
 
     private Long id;

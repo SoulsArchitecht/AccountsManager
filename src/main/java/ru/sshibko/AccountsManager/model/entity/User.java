@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@Builder
+@Builder(toBuilder = true)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

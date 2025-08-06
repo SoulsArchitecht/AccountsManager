@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public final class UserDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
