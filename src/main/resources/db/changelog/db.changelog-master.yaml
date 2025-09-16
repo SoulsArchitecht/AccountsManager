@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/V1/create-role-table.yaml
+  - include:
+      file: db/changelog/changeset/V1/create-user-table.yaml
+  - include:
+      file: db/changelog/changeset/V1/create-url-table.yaml
+  - include:
+      file: db/changelog/changeset/V1/create-user_roles-table.yaml
+  - include:
+      file: db/changelog/changeset/V1/create-foreign-keys.yaml
+  - include:
+      file: db/changelog/changeset/V1/05-03-2025-role-changes.yaml
+  - include:
+      file: db/changelog/changeset/V1/07.07.2025-create-user-info-table.yaml
+#  - include:
+#      file: db/changelog/changeset/V1/data-insertion.yaml
+#  - include:
+#      file: db/changelog/changeset/V1/rename-url-to-account-table.yaml

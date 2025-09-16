@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 04-create-user_role-table
+      author: Sergey Shibko
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: bigserial
+                  constraints:
+                    nullable: false

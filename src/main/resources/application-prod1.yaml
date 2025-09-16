@@ -1,0 +1,35 @@
+server:
+  port: 8088
+
+spring:
+
+  liquibase:
+    enabled: true
+
+  datasource:
+    #for docker:
+    url: jdbc:postgresql://localhost:15432/account_manager
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    #    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    #    hibernate:
+    #      ddl-auto: update
+    #      dialect: org.hibernate.dialect.PostgreSQL9Dialect
+    #      show_sql: true
+    properties:
+      hibernate:
+        #        show_sql: true
+        #        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        temp:
+          use_jdbc_metadata_defaults: false
+        format_sql: true
+
+# account security:
+account:
+  security:
+    aes: "AES"
+    secret: "secret-key-12345"

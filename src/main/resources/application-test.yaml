@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:account_manager
+    driver-class-name: org.h2.Driver
+    username: user
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+
+  liquibase:
+    enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: 8088
+
+account:
+  security:
+    aes: "AES"
+    secret: "secret-key-12345"
+
+
+app:
+  jwt-secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970988776655443232232324243243243243
+  jwt-expiration-ms: 86400000 # 24h
+
+file:
+  upload-dir: uploads

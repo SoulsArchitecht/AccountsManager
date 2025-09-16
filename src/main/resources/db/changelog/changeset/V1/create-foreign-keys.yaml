@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+        id: 05-create-foreign-keys
+        author: Shibko Sergey
+        changes:
+          - addForeignKeyConstraint:
+              baseColumnNames: user_id
+              baseTableName: urls
+              constraintName: FK_USER_ID
+              deferrable: false
+              initiallyDeferred: false
+              referencedColumnNames: id
+              referencedTableName: users
+              validate: true
+  - changeSet:
+        id: 06-create-foreign-keys
+        author: Shibko Sergey
+        changes:
+          - addForeignKeyConstraint:
+              baseColumnNames: role_id
+              baseTableName: user_roles
+              constraintName: FK_USER_ROLES_ROLES_ID
+              deferrable: false
+              initiallyDeferred: false
+              referencedColumnNames: id
+              referencedTableName: roles
+              validate: true
+  - changeSet:
+        id: 07-create-foreign-keys
+        author: Shibko Sergey
+        changes:
+          - addForeignKeyConstraint:
+              baseColumnNames: user_id
+              baseTableName: user_roles
+              constraintName: FK_USER_ROLES_USER_ID
+              deferrable: false
+              initiallyDeferred: false
+              referencedColumnNames: id
+              referencedTableName: users
+              validate: true
+
+
