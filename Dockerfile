@@ -1,10 +1,22 @@
-FROM maven:3.8.5-openjdk-17 as builder
+FROM eclipse-temurin:17-jdk-focal as builder
+
 WORKDIR /app
-COPY . /app/
-RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
+
+COPY pom.xml .
+COPY ui ./ui
+COPY src ./src
+
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
-COPY --from=builder /app/target/*.jar /app/*.jar
-EXPOSE 8088
-ENTRYPOINT ["java", "-jar", "/app/*.jar"]
+
+RUN apk add --no-cache tzdata
+
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
