@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: accounts_db
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: accounts_app
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ACCOUNT_SECURITY_SECRET: ${ACCOUNT_SECURITY_SECRET}
+    depends_on:
+      - db
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: accounts_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: accounts_certbot
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot:rw
+    command: >
+      sh -c "
+      sleep 10 &&
+      certbot certonly --webroot -w /var/www/certbot
+        --domain shibko-soft.ru
+        --domain www.shibko-soft.ru
+        --email sshibkodev@gmail.com
+        --agree-tos --no-eff-email --non-interactive
+        || exit 0
+      while true; do
+        sleep 12h || exit 0;
+        certbot renew --quiet --post-hook 'nginx -s reload';
+      done
+      "
+    depends_on:
+      - nginx
+
+volumes:
+  postgres_data:
+  certbot_conf:
