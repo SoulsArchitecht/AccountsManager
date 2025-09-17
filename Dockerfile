@@ -2,6 +2,8 @@ FROM eclipse-temurin:17-jdk-focal as builder
 
 WORKDIR /app
 
+COPY mvnw .
+COPY .mvn ./.mvn
 COPY pom.xml .
 COPY ui ./ui
 COPY src ./src
