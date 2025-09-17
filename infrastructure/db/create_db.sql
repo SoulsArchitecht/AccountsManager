@@ -1,1 +1,1 @@
-CREATE DATABASE account_manager
+CREATE DATABASE ams_db
