@@ -53,20 +53,21 @@ services:
     volumes:
       - certbot_conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot:rw
-    command: >
-      sh -c "
-      sleep 10 &&
-      certbot certonly --webroot -w /var/www/certbot
+    entrypoint: >
+      /bin/sh -c '
+      sleep 10
+      && certbot certonly --webroot -w /var/www/certbot
         --domain shibko-soft.ru
         --domain www.shibko-soft.ru
         --email sshibkodev@gmail.com
         --agree-tos --no-eff-email --non-interactive
-        || exit 0
+      || echo "Certificate already exists or failed"
+
       while true; do
-        sleep 12h || exit 0;
-        certbot renew --quiet --post-hook 'nginx -s reload';
+        sleep 12h
+        certbot renew --quiet --post-hook "nginx -s reload"
       done
-      "
+      '
     depends_on:
       - nginx
 
