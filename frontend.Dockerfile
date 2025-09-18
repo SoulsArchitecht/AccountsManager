@@ -1,9 +1,9 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY ui/package*.json ./
+COPY ui/. ./
 RUN npm ci --silent
-COPY ui/ui ./ui
-RUN npm run build --prefix ui
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/ui/build /usr/share/nginx/html
