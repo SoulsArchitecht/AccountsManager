@@ -47,29 +47,6 @@ services:
       - app
     restart: unless-stopped
 
-  certbot:
-    image: certbot/certbot
-    container_name: accounts_certbot
-    volumes:
-      - certbot_conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot:rw
-    command: >
-      /bin/sh -c "
-      sleep 10 &&
-      certbot certonly --webroot -w /var/www/certbot
-        --domain shibko-soft.ru
-        --domain www.shibko-soft.ru
-        --email sshibkodev@gmail.com
-        --agree-tos --no-eff-email --non-interactive
-        || echo 'Certificate already exists';
-      while true; do
-        sleep 43200;
-        certbot renew --quiet --post-hook 'nginx -s reload';
-      done
-      "
-    depends_on:
-      - nginx
-
 volumes:
   postgres_data:
   certbot_conf:
