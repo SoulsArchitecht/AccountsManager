@@ -11,7 +11,7 @@ services:
     volumes:
       - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       - ./src/main/resources/db/changelog:/docker-entrypoint-initdb.d/changelog
-      - db-data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     restart: unless-stopped
 
   app:
@@ -74,3 +74,4 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  db_data:
