@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ACCOUNT_REST_API_BASE_URL = "http://localhost:8088/accounts";
+const ACCOUNT_REST_API_BASE_URL = "http://localhost:8080/accounts";
 
 export const getAllAccounts = (params) => {
     return axios.get(ACCOUNT_REST_API_BASE_URL, {
