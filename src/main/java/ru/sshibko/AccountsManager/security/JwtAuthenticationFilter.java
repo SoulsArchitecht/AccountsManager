@@ -32,11 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-/*        if (request.getServletPath().equals("/auth/login")) {
+       if (request.getServletPath().contains("/auth")) {
             filterChain.doFilter(request, response);
             return;
-        }
-
+       }
+/*
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return; // Важно: пропускаем дальше по цепочке, если нет токена
