@@ -4,11 +4,20 @@ import axios from 'axios';
 const AUTH_REST_API_BASE_URL = "/auth";
 
 export const login = (email, password) => {
-    return axios.post(`${AUTH_REST_API_BASE_URL}/login`, { email, password });
-};
+    return axios.post(`${AUTH_REST_API_BASE_URL}/login`, { email, password }, {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+    });
+}
+
 
 export const register = (email, password, login) => {
-    return axios.post(`${AUTH_REST_API_BASE_URL}/register`, { email, password, login });
+    return axios.post(`${AUTH_REST_API_BASE_URL}/register`, { email, password, login }, {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+    });
 };
 
 //The Interceptor to auto adding a token
