@@ -3,6 +3,7 @@ package ru.sshibko.AccountsManager.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,8 +48,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**", "/swagger-ui/**"))*/
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/v3/api-docs/**",
-                                "/swagger-ui/**", "/uploads/**").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configurer -> configurer
@@ -108,7 +110,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
+                "http://localhost:8080",
+                "https://myacc.shibko-soft.ru"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization",
