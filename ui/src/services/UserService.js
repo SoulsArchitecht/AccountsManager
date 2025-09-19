@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const USER_REST_API_BASE_URL = "http://localhost:8080/users";
+//const USER_REST_API_BASE_URL = "http://localhost:8080/users";
+const USER_REST_API_BASE_URL = "http://myacc.shibko-soft.ru/users";
 
 //export const getAllUsers = (params) => axios.get(USER_REST_API_BASE_URL, {params});
 
