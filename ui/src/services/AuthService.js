@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const AUTH_REST_API_BASE_URL = "http://localhost:8088/auth";
+const AUTH_REST_API_BASE_URL = "http://localhost:8080/auth";
 
 export const login = (email, password) => {
     return axios.post(`${AUTH_REST_API_BASE_URL}/login`, { email, password });
