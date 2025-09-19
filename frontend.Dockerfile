@@ -1,12 +1,19 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine
+
 WORKDIR /app
+
+# Установка зависимостей
 COPY ui/package*.json ./
-COPY ui/. ./
-RUN npm ci --silent
+RUN npm install
+
+# Копируем весь frontend
+COPY ui .
+
+# Собираем продакшен-версию
 RUN npm run build
 
-FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
-COPY nginx/conf.d/app.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Сервим через serve
+RUN npm install -g serve
+EXPOSE 3000
+
+CMD ["serve", "-s", "build", "-p", "3000"]
