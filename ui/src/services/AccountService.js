@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //const ACCOUNT_REST_API_BASE_URL = "http://localhost:8080/accounts";
-const ACCOUNT_REST_API_BASE_URL = "http://myacc.shibko-soft.ru/accounts";
+const ACCOUNT_REST_API_BASE_URL = "/accounts";
 
 export const getAllAccounts = (params) => {
     return axios.get(ACCOUNT_REST_API_BASE_URL, {
