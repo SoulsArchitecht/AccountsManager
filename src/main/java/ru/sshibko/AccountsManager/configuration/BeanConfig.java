@@ -9,6 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,7 +23,8 @@ public class BeanConfig {
 
     @Bean
     public Key key() {
-        return  new SecretKeySpec(SECRET.getBytes(), AES);
+        byte[] decodedKey = Base64.getDecoder().decode(SECRET);
+        return  new SecretKeySpec(decodedKey, AES);
     }
 
     @Bean
