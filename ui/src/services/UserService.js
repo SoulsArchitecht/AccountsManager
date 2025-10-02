@@ -40,10 +40,6 @@ export const uploadAvatar = (file) => {
     return axios.post(USER_REST_API_BASE_URL + '/info/me/avatar', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
-        },
-        transformRequest: (data, headers) => {
-            delete headers['Content-Type'];
-            return data;
         }
     });
 };
