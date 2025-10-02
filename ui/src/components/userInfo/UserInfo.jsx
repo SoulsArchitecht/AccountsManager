@@ -87,7 +87,8 @@ const UserInfo = () => {
               <div className="col-md-3 text-center">
                 <div className="mb-3 avatar-container">
                   <img
-                    src={`http://localhost:8088/uploads/${user.userInfo.avatarUrl}`}
+                    //src={`http://localhost:8080/uploads/${user.userInfo.avatarUrl}`}
+                    src={`/uploads/${user.userInfo.avatarUrl}`}
                     alt="Avatar"
                     className="rounded-circle avatar-img"
                   />
