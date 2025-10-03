@@ -59,7 +59,8 @@ const Header = () => {
                   {/* <FaCog className="me-1" /> */}
                   {user?.userInfo?.avatarUrl ? (
                     <img 
-                      src={`http://localhost:8088/uploads/${user?.userInfo.avatarUrl}`} 
+                      //src={`http://localhost:8080/uploads/${user?.userInfo.avatarUrl}`}
+                      src={`/uploads/${user.userInfo.avatarUrl}`} 
                       alt="User Avatar"
                       className="rounded-circle me-2"
                       width="24"
