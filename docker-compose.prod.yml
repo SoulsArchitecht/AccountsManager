@@ -18,6 +18,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - USER_ID=${APP_USER_ID:-1000}
+        - GROUP_ID=${APP_GROUP_ID:-1000}
     container_name: accounts_app
     env_file: .env
     environment:
@@ -56,6 +59,7 @@ services:
       - ./certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf:ro
+      - ./uploads:/home/deploy/accounts-manager/uploads
     depends_on:
       - app
       - frontend
