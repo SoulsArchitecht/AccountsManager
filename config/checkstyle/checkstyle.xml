@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="warning"/>
+    <property name="fileExtensions" value=".java"/>
+
+    <module name="TreeWalker">
+
+        <!-- Неиспользуемые импорты -->
+        <module name="UnusedImports"/>
+
+        <!-- Звёздочка в импортах — разрешаем для lombok и jakarta.persistence -->
+        <module name="AvoidStarImport">
+            <property name="excludes" value="lombok.*, jakarta.persistence.*, java.util.*"/>
+        </module>
+
+        <!-- Длина строки — до 120 символов, только предупреждение -->
+        <module name="LineLength">
+            <property name="max" value="120"/>
+            <property name="severity" value="info"/>
+        </module>
+
+        <!-- final для параметров — игнорируем -->
+        <module name="FinalParameters">
+            <property name="severity" value="ignore"/>
+        </module>
+
+        <!-- Javadoc для полей и методов — ОТКЛЮЧАЕМ ПОЛНОСТЬЮ -->
+        <module name="JavadocVariable">
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="MissingJavadocMethod">
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="DesignForExtension">
+            <property name="severity" value="ignore"/>
+        </module>
+
+        <!-- Magic numbers — игнорируем часто используемые -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 8, 16, 32, 64, 128, 255, 1024"/>
+            <property name="severity" value="info"/>
+        </module>
+
+        <!-- Константы должны быть верхним регистром -->
+        <module name="ConstantName">
+            <property name="severity" value="warning"/>
+        </module>
+
+        <!-- Блоки if без {} -->
+        <module name="NeedBraces"/>
+
+    </module>
+</module>
