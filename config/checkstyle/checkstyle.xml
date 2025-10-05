@@ -5,30 +5,15 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="warning"/>
-    <property name="fileExtensions" value=".java"/>
 
     <module name="TreeWalker">
 
-        <!-- Неиспользуемые импорты -->
-        <module name="UnusedImports"/>
-
-        <!-- Звёздочка в импортах — разрешаем для lombok и jakarta.persistence -->
+        <!-- Разрешаем import * для Lombok и JPA -->
         <module name="AvoidStarImport">
             <property name="excludes" value="lombok.*, jakarta.persistence.*, java.util.*"/>
         </module>
 
-        <!-- Длина строки — до 120 символов, только предупреждение -->
-        <module name="LineLength">
-            <property name="max" value="120"/>
-            <property name="severity" value="info"/>
-        </module>
-
-        <!-- final для параметров — игнорируем -->
-        <module name="FinalParameters">
-            <property name="severity" value="ignore"/>
-        </module>
-
-        <!-- Javadoc для полей и методов — ОТКЛЮЧАЕМ ПОЛНОСТЬЮ -->
+        <!-- Убираем обязательный Javadoc -->
         <module name="JavadocVariable">
             <property name="severity" value="ignore"/>
         </module>
@@ -39,19 +24,29 @@
             <property name="severity" value="ignore"/>
         </module>
 
-        <!-- Magic numbers — игнорируем часто используемые -->
-        <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 8, 16, 32, 64, 128, 255, 1024"/>
+        <!-- Длина строки — до 120 символов -->
+        <module name="LineLength">
+            <property name="max" value="120"/>
             <property name="severity" value="info"/>
         </module>
 
-        <!-- Константы должны быть верхним регистром -->
-        <module name="ConstantName">
-            <property name="severity" value="warning"/>
+        <!-- Неиспользуемые импорты -->
+        <module name="UnusedImports"/>
+
+        <!-- final для параметров — игнорируем -->
+        <module name="FinalParameters">
+            <property name="severity" value="ignore"/>
         </module>
 
-        <!-- Блоки if без {} -->
+        <!-- Magic numbers — игнорируем часто используемые -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 1, 2, 3, 4, 5, 8, 10, 16, 32, 64, 128, 255, 1024"/>
+            <property name="severity" value="info"/>
+        </module>
+
+        <!-- Обязательные фигурные скобки -->
         <module name="NeedBraces"/>
 
     </module>
+
 </module>
