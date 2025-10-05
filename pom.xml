@@ -17,8 +17,8 @@
 		<java.version>17</java.version>
 		<postgresql.version>42.6.0</postgresql.version>
 		<liquibase.version>4.24.0</liquibase.version>
-		<sonar.projectKey>SoulsArchitecht_AccountsManager</sonar.projectKey>
-		<sonar.organization>soulsarchitecht</sonar.organization>
+		<sonar.projectKey>soulsarchitecht</sonar.projectKey>
+		<sonar.organization>Serge Shibko</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
