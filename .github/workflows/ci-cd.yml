@@ -42,11 +42,12 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           ./mvnw sonar:sonar \
             -Dsonar.projectKey=soulsarchitecht_accountsmanager \
             -Dsonar.organization=soulsarchitecht \
-            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.java.coveragePlugin=jacoco \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -B
