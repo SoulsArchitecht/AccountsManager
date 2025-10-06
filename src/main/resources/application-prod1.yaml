@@ -9,8 +9,8 @@ spring:
   datasource:
     #for docker:
     url: jdbc:postgresql://localhost:15432/account_manager
-    username: username
-    password: password
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
 
   jpa:
