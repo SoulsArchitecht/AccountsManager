@@ -48,6 +48,7 @@ jobs:
             -Dsonar.projectKey=soulsarchitecht_accountsmanager \
             -Dsonar.organization=soulsarchitecht \
             -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.branch.name=main \
             -Dsonar.java.coveragePlugin=jacoco \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -B
