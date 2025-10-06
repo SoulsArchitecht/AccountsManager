@@ -45,7 +45,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           ./mvnw sonar:sonar \
-            -Dsonar.projectKey=soulsarchitecht_accountsmanager \
+            -Dsonar.projectKey=SoulsArchitecht_AccountsManager \
             -Dsonar.organization=soulsarchitecht \
             -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.branch.name=main \
