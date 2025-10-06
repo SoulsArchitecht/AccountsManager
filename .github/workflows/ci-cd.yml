@@ -44,11 +44,14 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
+          
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          
           ./mvnw sonar:sonar \
             -Dsonar.projectKey=SoulsArchitecht_AccountsManager \
             -Dsonar.organization=soulsarchitecht \
             -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.branch.name=main \
+            -Dsonar.branch.name=${BRANCH_NAME} \
             -Dsonar.java.coveragePlugin=jacoco \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -B
