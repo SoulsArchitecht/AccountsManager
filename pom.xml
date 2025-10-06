@@ -19,7 +19,8 @@
 		<liquibase.version>4.24.0</liquibase.version>
 		<sonar.projectKey>soulsarchitecht</sonar.projectKey>
 		<sonar.organization>Serge Shibko</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.projectName>AccountsManager</sonar.projectName>
+		<sonar.host.url>https://sonarcloud.io/soulsarchitecht</sonar.host.url>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
