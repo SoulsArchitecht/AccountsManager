@@ -40,8 +40,8 @@ app:
 
   contact:
     email: "sshibkodev@gmail.com"
-    phone: +79149057065
-    telegram: @sergeshibko
+    phone: "+79149057065"
+    telegram: "https://t.me/sergeshibko"
   version:
     number: "0.1.0"
     status: "TEST"

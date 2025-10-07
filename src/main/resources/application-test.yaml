@@ -32,12 +32,20 @@ server:
 account:
   security:
     aes: "AES"
-    secret: "secret-key-12345"
+    secret: "Xo44IOH3QupeR94WpL/dZKCdABDVayMj77WSHmaQgGU="
 
 
 app:
   jwt-secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970988776655443232232324243243243243
   jwt-expiration-ms: 86400000 # 24h
+
+  contact:
+    email: "test@example.com"
+    phone: "+1111111111"
+    telegram: "@testbot"
+  version:
+    number: "0.0.1-TEST"
+    status: "TEST"
 
 file:
   upload-dir: uploads
