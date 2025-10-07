@@ -15,7 +15,7 @@
   text-align: center;
   border-top: 1px solid #eaeaea;
   font-size: 0.9rem;
-  color: #555;
+  color: #050404e8;
   margin-top: auto;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .test-badge {
-  color: red;
+  color: rgb(186, 231, 23);
   font-weight: bold;
   font-size: 1.2em;
   margin-left: 0.5rem;
