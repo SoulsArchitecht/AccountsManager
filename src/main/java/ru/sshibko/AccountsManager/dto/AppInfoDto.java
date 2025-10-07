@@ -4,7 +4,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
 public class AppInfoDto {
 
