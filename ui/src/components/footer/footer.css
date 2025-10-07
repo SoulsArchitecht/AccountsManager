@@ -1,4 +1,4 @@
-.footer {
+/* .footer {
     position: relative;
     bottom: 0;
     width: 100%;
@@ -6,4 +6,26 @@
     background-color: darkviolet;
     text-align: center;
     color: white;
+} */
+
+.footer {
+  /* background-color: #f8f9fa; */
+  background-color: darkviolet;
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #eaeaea;
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: auto;
+}
+
+.version-info {
+  margin-top: 0.5rem;
+}
+
+.test-badge {
+  color: red;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-left: 0.5rem;
 }
