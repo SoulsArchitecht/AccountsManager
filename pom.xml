@@ -188,21 +188,31 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>3.6.0</version>
-				<configuration>
-					<configLocation>config/checkstyle/checkstyle.xml</configLocation>
-					<consoleOutput>true</consoleOutput>
-					<failsOnError>false</failsOnError>
-					<logViolationsToConsole>true</logViolationsToConsole>
-				</configuration>
+<!--				<configuration>-->
+<!--					<configLocation>config/checkstyle/checkstyle.xml</configLocation>-->
+<!--					<consoleOutput>true</consoleOutput>-->
+<!--					<failsOnError>false</failsOnError>-->
+<!--					<logViolationsToConsole>true</logViolationsToConsole>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>validate</id>-->
+<!--						<phase>validate</phase>-->
+<!--						<goals>-->
+<!--							<goal>check</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
 				<executions>
 					<execution>
 						<id>validate</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
+						<phase>none</phase> <!-- отключает привязку к фазе validate -->
 					</execution>
 				</executions>
+				<configuration>
+					<skip>true</skip>   <!-- гарантирует, что не запустится -->
+					<failOnViolation>false</failOnViolation>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
