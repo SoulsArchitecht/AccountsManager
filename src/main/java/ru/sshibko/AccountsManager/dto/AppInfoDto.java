@@ -1,0 +1,16 @@
+package ru.sshibko.AccountsManager.dto;
+
+import lombok.*;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+@Builder(toBuilder = true)
+public class AppInfoDto {
+
+    private String email;
+    private String phone;
+    private String telegram;
+    private String versionNumber;
+    private String versionStatus;
+}
