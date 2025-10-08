@@ -39,8 +39,8 @@ app:
   jwt-expiration-ms: 7200000 # 2h
 
   contact:
-    email: "sshibkodev@gmail.com"
-    phone: "+79149057065"
+    email: "mailto:sshibkodev@gmail.com"
+    phone: "tel:+79149057065"
     telegram: "https://t.me/sergeshibko"
   version:
     number: "0.1.0"

@@ -27,20 +27,38 @@ const Footer = () => {
   return (
     <div>
       <footer className="footer">
-        <span>
-          <div className="contact-info">
-            {appInfo.email && <>📧 {appInfo.email}</>}
-            {appInfo.phone && <> | ☎️ {appInfo.phone}</>}
-            {appInfo.telegram && <> | 📱 {appInfo.telegram}</>} 
-          </div>
-          <div className="version-info">
-            Версия: {appInfo.versionNumber}
-            {appInfo.versionStatus === 'TEST' && (
-              <span className="test-badge">ТЕСТОВАЯ ВЕРСИЯ</span>
-            )}
-          </div>
-        </span>
-        <span>All rights reserved ©2024 by Serge Shibko</span>
+        <div className="contact-info">
+          {appInfo.email && (
+            <a href={appInfo.email} target="_blank" rel="noopener noreferrer">
+              📧 Email
+            </a>
+          )}
+          {appInfo.phone && (
+            <>
+              {appInfo.email && ' | '}
+              <a href={appInfo.phone}>☎️ Звонок</a>
+            </>
+          )}
+          {appInfo.telegram && (
+            <>
+              {(appInfo.email || appInfo.phone) && ' | '}
+              <a href={appInfo.telegram} target="_blank" rel="noopener noreferrer">
+                📱 Telegram
+              </a>
+            </>
+          )}
+        </div>
+
+        <div className="version-info">
+          Версия: {appInfo.versionNumber}
+          {appInfo.versionStatus === 'TEST' && (
+            <span className="test-badge">ТЕСТОВАЯ ВЕРСИЯ</span>
+          )}
+        </div>
+
+        <div className="copyright">
+          All rights reserved ©2024 by Serge Shibko
+        </div>
       </footer>
     </div>
   )
