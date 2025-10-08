@@ -1,0 +1,35 @@
+.home-page {
+    width: 100%;
+    padding: 16px 0;
+}
+
+.home-image-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.home-image {
+    max-width: 100%;
+    height: auto;
+    width: 80%; /* по умолчанию — 80% ширины */
+    max-width: 600px; /* не растягивать больше 600px */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .home-image {
+        width: 90%; /* чуть шире на планшетах */
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-image {
+        width: 95%; /* почти на всю ширину на смартфонах */
+        max-width: 320px;
+        border-radius: 6px;
+    }
+}
