@@ -5,13 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from '../src/authContext/AuthContext';
+import { LocalizationProvider } from './contexts/LocalizationContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <LocalizationProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </LocalizationProvider>
   </React.StrictMode>
 );
 
