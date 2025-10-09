@@ -2,41 +2,43 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../authContext/AuthContext';
 import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog, FaSignOutAlt, FaSignInAlt, FaKey } from 'react-icons/fa';
 import '../header/Header.css';
+import { useLocalization } from './contexts/LocalizationContext';
 
 const Header = () => {
   const { token, logout, user, userInfo } = useAuth();
+  const { t, loading } = useLocalization();
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark px-4">
       <div className="container-fluid">
         <Link to="/accounts" className="navbar-brand d-flex align-items-center">
           <FaKey className="me-2" />
-          <span className="d-none d-sm-inline">Accounts System</span>
+          <span className="d-none d-sm-inline">{t('app.nav.title')}</span>
         </Link>
 
         <div className="navbar-nav me-auto">
           <li className="nav-item">
             <Link to="/accounts" className="nav-link d-flex align-items-center">
               <FaListUl className="me-1" />
-              <span className="ms-1">Accounts</span>
+              <span className="ms-1">{t('app.nav.list')}</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/add-account" className="nav-link d-flex align-items-center">
               <FaPlus className="me-1" />
-              <span className="ms-1">Add</span>
+              <span className="ms-1">{t('app.nav.add')}</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/accounts/search" className="nav-link d-flex align-items-center">
               <FaSearch className="me-1" />
-              <span className="ms-1">Search</span>
+              <span className="ms-1">{t('app.nav.search')}</span>
             </Link>
           </li>
           <li className="nav-item">
                 <Link to={"/"} className="nav-link">
                   <FaHome className="me-1" />
-                  <span className="ms-1">Home</span>
+                  <span className="ms-1">{t('app.nav.home')}</span>
                 </Link>
               </li>
           {user?.role?.includes('ROLE_ADMIN') && (
@@ -81,7 +83,7 @@ const Header = () => {
                   onClick={logout}
                 >
                   <FaSignOutAlt className="me-1" />
-                  <span className="ms-1">Logout</span>
+                  <span className="ms-1">{t('app.nav.logout')}</span>
                 </button>
               </li>
             </>
@@ -89,7 +91,7 @@ const Header = () => {
             <li className="nav-item">
               <Link to="/login" className="nav-link d-flex align-items-center">
                 <FaSignInAlt className="me-1" />
-                <span className="ms-1">Login</span>
+                <span className="ms-1">{t('app.nav.login')}</span>
               </Link>
             </li>
           )}
