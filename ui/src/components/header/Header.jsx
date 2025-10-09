@@ -13,32 +13,32 @@ const Header = () => {
       <div className="container-fluid">
         <Link to="/accounts" className="navbar-brand d-flex align-items-center">
           <FaKey className="me-2" />
-          <span className="d-none d-sm-inline">{t('app.nav.title')}</span>
+          <span className="d-none d-sm-inline">{t('nav.title')}</span>
         </Link>
 
         <div className="navbar-nav me-auto">
           <li className="nav-item">
             <Link to="/accounts" className="nav-link d-flex align-items-center">
               <FaListUl className="me-1" />
-              <span className="ms-1">{t('app.nav.list')}</span>
+              <span className="ms-1">{t('nav.accounts')}</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/add-account" className="nav-link d-flex align-items-center">
               <FaPlus className="me-1" />
-              <span className="ms-1">{t('app.nav.add')}</span>
+              <span className="ms-1">{t('nav.add')}</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/accounts/search" className="nav-link d-flex align-items-center">
               <FaSearch className="me-1" />
-              <span className="ms-1">{t('app.nav.search')}</span>
+              <span className="ms-1">{t('nav.search')}</span>
             </Link>
           </li>
           <li className="nav-item">
                 <Link to={"/"} className="nav-link">
                   <FaHome className="me-1" />
-                  <span className="ms-1">{t('app.nav.home')}</span>
+                  <span className="ms-1">{t('nav.home')}</span>
                 </Link>
               </li>
           {user?.role?.includes('ROLE_ADMIN') && (
@@ -83,7 +83,7 @@ const Header = () => {
                   onClick={logout}
                 >
                   <FaSignOutAlt className="me-1" />
-                  <span className="ms-1">{t('app.nav.logout')}</span>
+                  <span className="ms-1">{t('nav.logout')}</span>
                 </button>
               </li>
             </>
@@ -91,7 +91,7 @@ const Header = () => {
             <li className="nav-item">
               <Link to="/login" className="nav-link d-flex align-items-center">
                 <FaSignInAlt className="me-1" />
-                <span className="ms-1">{t('app.nav.login')}</span>
+                <span className="ms-1">{t('nav.login')}</span>
               </Link>
             </li>
           )}
