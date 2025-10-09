@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../authContext/AuthContext';
 import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog, FaSignOutAlt, FaSignInAlt, FaKey } from 'react-icons/fa';
 import '../header/Header.css';
-import { useLocalization } from './contexts/LocalizationContext';
+import { useLocalization } from '../../context/LocalizationContext';
 
 const Header = () => {
   const { token, logout, user, userInfo } = useAuth();
