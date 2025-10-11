@@ -38,20 +38,20 @@ const Footer = () => {
         <div className="contact-info">
           {appInfo.email && (
             <a href={appInfo.email} target="_blank" rel="noopener noreferrer">
-              📧 {t('app.version.email')}
+              📧 {t('app.contact.email')}
             </a>
           )}
           {appInfo.phone && (
             <>
               {appInfo.email && ' | '}
-              <a href={appInfo.phone}>☎️ {t('app.version.phone')}</a>
+              <a href={appInfo.phone}>☎️ {t('app.contact.phone')}</a>
             </>
           )}
           {appInfo.telegram && (
             <>
               {(appInfo.email || appInfo.phone) && ' | '}
               <a href={appInfo.telegram} target="_blank" rel="noopener noreferrer">
-                📱 {t('app.version.telegram')}
+                📱 {t('app.contact.telegram')}
               </a>
             </>
           )}
