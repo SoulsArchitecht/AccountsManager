@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../authContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useLocalization } from '../../context/LocalizationContext';
 
 const RegisterForm = () => {
     const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ const RegisterForm = () => {
     const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
+    const { t } = useLocalization();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,11 +28,11 @@ const RegisterForm = () => {
             <div className="col-md-6">
               <div className="card">
                 <div className="card-body">
-                  <h2 className="card-title text-center">Register</h2>
+                  <h2 className="card-title text-center">{t('auth.register')}</h2>
                   {error && <div className="alert alert-danger">{error}</div>}
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                      <label htmlFor="email" className="form-label">Email:</label>
+                      <label htmlFor="email" className="form-label">{t('auth.email')}</label>
                       <input
                         type="email"
                         className="form-control"
@@ -41,7 +43,7 @@ const RegisterForm = () => {
                       />
                     </div>
                     <div className="mb-3">
-                      <label htmlFor="password" className="form-label">Password (min 8 characters):</label>
+                      <label htmlFor="password" className="form-label">{t('auth.password')}({t('help.password')}):</label>
                       <input
                         type="password"
                         className="form-control"
@@ -53,7 +55,7 @@ const RegisterForm = () => {
                       />
                     </div>
                     <div className="mb-3">
-                      <label htmlFor="login" className="form-label">Nickname:</label>
+                      <label htmlFor="login" className="form-label">{t('auth.nickname')}</label>
                       <input
                         type="text"
                         className="form-control"
@@ -66,11 +68,11 @@ const RegisterForm = () => {
                       />
                     </div>
                     <div className="d-grid">
-                      <button type="submit" className="btn btn-primary">Register</button>
+                      <button type="submit" className="btn btn-primary">{t('auth.sign_up')}</button>
                     </div>
                   </form>
                   <div className="mt-3 text-center">
-                    Already have an account?{' '}
+                    {t('help.already_registered')}{' '}
                     <button className="btn btn-link p-0" onClick={() => navigate('/login')}>
                       Login
                     </button>

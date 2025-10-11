@@ -1,0 +1,18 @@
+.language-switcher {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.language-switcher button {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.language-switcher button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

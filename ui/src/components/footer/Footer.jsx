@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { fetchAppInfo } from '../../services/AppInfoService';
 import './footer.css'
+import { useLocalization } from '../../context/LocalizationContext';
 
 const Footer = () => {
 
-  const [appInfo, setAppInfo] = useState(null);
+  const [appInfo, setAppInfo] = useState({
+  email: null,
+  phone: null,
+  telegram: null,
+  versionNumber: null,
+  versionStatus: null
+  });
   const [loading, setLoading] = useState(true);
+  const { t } = useLocalization();
   
   
   useEffect(() => {
@@ -21,7 +29,7 @@ const Footer = () => {
   }, []);
 
   if (loading) {
-    return <footer className="footer">Загрузка...</footer>;
+    return <footer className="footer">{t('common.loading')}</footer>;
   }
 
   return (
@@ -30,34 +38,34 @@ const Footer = () => {
         <div className="contact-info">
           {appInfo.email && (
             <a href={appInfo.email} target="_blank" rel="noopener noreferrer">
-              📧 Email
+              📧 {t('app.version.email')}
             </a>
           )}
           {appInfo.phone && (
             <>
               {appInfo.email && ' | '}
-              <a href={appInfo.phone}>☎️ Звонок</a>
+              <a href={appInfo.phone}>☎️ {t('app.version.phone')}</a>
             </>
           )}
           {appInfo.telegram && (
             <>
               {(appInfo.email || appInfo.phone) && ' | '}
               <a href={appInfo.telegram} target="_blank" rel="noopener noreferrer">
-                📱 Telegram
+                📱 {t('app.version.telegram')}
               </a>
             </>
           )}
         </div>
 
         <div className="version-info">
-          Версия: {appInfo.versionNumber}
+          {t('app.version.number')} {appInfo.versionNumber}
           {appInfo.versionStatus === 'TEST' && (
-            <span className="test-badge">ТЕСТОВАЯ ВЕРСИЯ</span>
+            <span className="test-badge">{t('app.version.status')}</span>
           )}
         </div>
 
         <div className="copyright">
-          All rights reserved ©2024 by Serge Shibko
+          {t('app.version.copyright')}
         </div>
       </footer>
     </div>

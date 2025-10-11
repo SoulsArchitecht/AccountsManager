@@ -12,9 +12,10 @@ export const useLocalization = () => {
 };
 
 const CACHE_KEY = 'app_translations';
-const CACHE_VERSION = 'v1'; 
+const CACHE_VERSION = 'v2';
+const LANG_KEY = 'app_language'; 
 
-const fetchMessages = async () => {
+const fetchMessages = async (lang) => {
   const cached = localStorage.getItem(CACHE_KEY);
   if (cached) {
     const { version, data, timestamp } = JSON.parse(cached);
@@ -24,7 +25,9 @@ const fetchMessages = async () => {
   }
 
   try {
-    const response = await axios.get('/localization/messages');
+    const response = await axios.get('/localization/messages', {
+      headers: { 'Accept-Language': lang}
+    });
     const payload = {
       version: CACHE_VERSION,
       data: response.data,
@@ -41,17 +44,36 @@ const fetchMessages = async () => {
 export const LocalizationProvider = ({ children }) => {
   const [messages, setMessages] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentLang, setCurrentLang] = useState('en');
+
+  const loadTranslations = async (lang) => {
+    setLoading(true);
+    const data = await fetchMessages(lang);
+    setMessages(data);
+    setCurrentLang(lang);
+    localStorage.setItem(LANG_KEY, lang);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    fetchMessages()
-      .then(setMessages)
-      .finally(() => setLoading(false));
+    const savedLang = localStorage.getItem(LANG_KEY) || 'en';
+    loadTranslations(savedLang);
   }, []);
 
-  const t = (key) => messages[key] || key;
+  const changeLanguage = (lang) => {
+    loadTranslations(lang);
+  }
+
+  const t = (key, ...args) => {
+    let str = messages[key] || key;
+    args.forEach((arg, i) => {
+      str = str.replace(`{${i}}`, arg);
+    });
+    return str;
+  };
 
   return (
-    <LocalizationContext.Provider value={{ t, loading }}>
+    <LocalizationContext.Provider value={{ t, loading, currentLang, changeLanguage }}>
       {children}
     </LocalizationContext.Provider>
   );
