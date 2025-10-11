@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +18,19 @@ public class LocalizationService {
             locale = Locale.ENGLISH;
         }
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
-        return Collections.list(bundle.getKeys()).stream()
-                .collect(Collectors.toMap(k -> k, bundle::getString));
+        Map<String, String> messages = new HashMap<>();
+        for (String key : bundle.keySet()) {
+            messages.put(key, messageSource.getMessage(key, null, locale));
+        }
+
+        return messages;
+/*        return Collections.list(bundle.getKeys()).stream()
+                .collect(Collectors.toMap(k -> k, bundle::getString));*/
+    }
+
+    public Locale parseLocale(String acceptLanguage) {
+        String[] parts = acceptLanguage.split(",");
+        String langTag = parts[0].split(";")[0].trim();
+        return Locale.forLanguageTag(langTag);
     }
 }

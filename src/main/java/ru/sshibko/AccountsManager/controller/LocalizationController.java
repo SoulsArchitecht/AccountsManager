@@ -20,9 +20,13 @@ public class LocalizationController {
             @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage
     ) {
         Locale locale = Locale.ENGLISH;
-        if (acceptLanguage != null && !acceptLanguage.isBlank()) {
+/*        if (acceptLanguage != null && !acceptLanguage.isBlank()) {
             locale = Locale.forLanguageTag(acceptLanguage.replace("-", "_"));
+        }*/
+        if (acceptLanguage != null && !acceptLanguage.isEmpty()) {
+            locale = localizationService.parseLocale(acceptLanguage);
         }
+
         return localizationService.getAllMessages(locale);
     }
 }
