@@ -5,7 +5,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +23,6 @@ public class LocalizationService {
         }
 
         return messages;
-/*        return Collections.list(bundle.getKeys()).stream()
-                .collect(Collectors.toMap(k -> k, bundle::getString));*/
     }
 
     public Locale parseLocale(String acceptLanguage) {
