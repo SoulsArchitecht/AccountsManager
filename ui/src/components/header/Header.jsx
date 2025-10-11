@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../authContext/AuthContext';
-import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog, FaSignOutAlt, FaSignInAlt, FaKey } from 'react-icons/fa';
+import { FaListUl, FaHome, FaPlus, FaSearch, FaUsers, FaCog,
+   FaSignOutAlt, FaSignInAlt, FaKey, FaGlobe } from 'react-icons/fa';
 import '../header/Header.css';
 import { useLocalization } from '../../context/LocalizationContext';
 
 const Header = () => {
   const { token, logout, user, userInfo } = useAuth();
-  const { t, loading } = useLocalization();
+  const { t, loading, currentLang, changeLanguage } = useLocalization();
+
+  const switchLanguage = () => {
+    const nextLang = currentLang === 'en' ? 'ru' : 'en';
+    changeLanguage(nextLang);
+  }
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark px-4">
@@ -53,7 +59,17 @@ const Header = () => {
         </div>
 
         {/* Правые элементы */}
-        <div className="navbar-nav ms-auto">
+        <div className="navbar-nav ms-auto d-flex align-items-center">
+          <button
+            onClick={switchLanguage}
+            className="btn btn-sm btn-outline-light d-flex align-items-center me-2"
+            title={currentLang === 'en' ? 'Switch to Russian' : 'Switch to English'}
+            aria-label="Switch language"
+          >
+            <FaGlobe className="me-1" />
+            {currentLang === 'en' ? 'EN' : 'RU'}
+          </button>
+
           {token ? (
             <>
               <li className="nav-item">
