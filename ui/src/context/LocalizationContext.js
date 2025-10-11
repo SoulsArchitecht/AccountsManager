@@ -11,34 +11,9 @@ export const useLocalization = () => {
   return context;
 };
 
-const CACHE_KEY = 'app_translations';
-const CACHE_VERSION = 'v2';
-const LANG_KEY = 'app_language'; 
-
-const fetchMessages = async (lang) => {
-  const cached = localStorage.getItem(CACHE_KEY);
-  if (cached) {
-    const { version, data, timestamp } = JSON.parse(cached);
-    if (version === CACHE_VERSION && Date.now() - timestamp < 24 * 60 * 60 * 1000) {
-      return data;
-    }
-  }
-
-  try {
-    const response = await axios.get('/localization/messages', {
-      headers: { 'Accept-Language': lang}
-    });
-    const payload = {
-      version: CACHE_VERSION,
-      data: response.data,
-      timestamp: Date.now()
-    };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
-    return response.data;
-  } catch (error) {
-    console.warn('Failed to load translations, falling back to empty');
-    return {};
-  }
+const getBrowserLanguage = () => {
+  const lang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+  return ['ru', 'en'].includes(lang) ? lang : 'en';
 };
 
 export const LocalizationProvider = ({ children }) => {
@@ -48,21 +23,29 @@ export const LocalizationProvider = ({ children }) => {
 
   const loadTranslations = async (lang) => {
     setLoading(true);
-    const data = await fetchMessages(lang);
-    setMessages(data);
-    setCurrentLang(lang);
-    localStorage.setItem(LANG_KEY, lang);
-    setLoading(false);
-  }
+    try {
+      const response = await axios.get('/localization/messages', {
+        headers: { 'Accept-Language': lang }
+      });
+      setMessages(response.data);
+      setCurrentLang(lang);
+    } catch (error) {
+      console.error('Failed to load translations', error);
+      setMessages({});
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const savedLang = localStorage.getItem(LANG_KEY) || 'en';
+    const savedLang = localStorage.getItem('app_language') || getBrowserLanguage();
     loadTranslations(savedLang);
   }, []);
 
   const changeLanguage = (lang) => {
+    localStorage.setItem('app_language', lang);
     loadTranslations(lang);
-  }
+  };
 
   const t = (key, ...args) => {
     let str = messages[key] || key;
