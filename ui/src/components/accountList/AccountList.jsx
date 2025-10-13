@@ -6,6 +6,7 @@ import { useTable } from 'react-table';
 import Pagination from '@mui/material/Pagination';
 import { useAuth } from '../../authContext/AuthContext';
 import '../accountList/AccountList.css';
+import { useLocalization } from '../../context/LocalizationContext';
 
 const AccountList = () => {
     const [data, setData] = useState({
@@ -24,6 +25,7 @@ const AccountList = () => {
     const [sortDirection, setSortDirection] = useState('desc');
     const { token } = useAuth();
     const navigate = useNavigate();
+    const { t } = useLocalization();
 
     const fetchAccounts = useCallback(async () => {
         try {
@@ -37,7 +39,6 @@ const AccountList = () => {
                 sort: `${sortField},${sortDirection}`
             };
             
-            // Удаляем undefined параметры
             Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
             
             const response = await getAllAccounts(params);
@@ -55,7 +56,7 @@ const AccountList = () => {
                 totalPages: 0,
                 totalElements: 0,
                 loading: false,
-                error: error.response?.data?.message || 'Failed to fetch accounts',
+                error: error.response?.data?.message || t('error.loading_accounts'),
                 success: null
             });
             console.error('Error fetching accounts:', error);
@@ -65,7 +66,7 @@ const AccountList = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchAccounts();
-        }, 1000); // Задержка для debounce при вводе текста
+        }, 500); // Задержка для debounce при вводе текста
         
         return () => clearTimeout(timer);
     }, [fetchAccounts]);
@@ -76,13 +77,13 @@ const AccountList = () => {
     };
 
     const removeAccount = async (id) => {
-        if (window.confirm(`Are you sure you to delete this account?`)) {
+        if (window.confirm(t('help.delete_confirm'))) {
             deleteAccount(id)
                 .then(() => {
                     setData(prev => ({
                         ...prev,
                         error: null,
-                        success: 'Account deleted successfully'
+                        success: t('help.delete_successfully')
                     }));
                     fetchAccounts();
                 })
@@ -98,8 +99,9 @@ const AccountList = () => {
     };
 
     const toggleAccountStatus = async (id, currentStatus) => {
-        const action = currentStatus ? 'deactivate' : 'activate';
-        if (!window.confirm(`Are you sure you want to ${action} this account?`)) {
+        const actionKey = currentStatus ? 'toggle.deactivate' : 'toggle.activate';
+        const actionVerb = currentStatus ? 'deactivate' : 'activate';
+        if (!window.confirm(`Are you sure you want to ${t(actionKey).toLowerCase()} this account?`)) {
             return;
         }
         
@@ -108,14 +110,14 @@ const AccountList = () => {
             setData(prev => ({
                 ...prev,
                 error: null,
-                success: `Account ${action}d successfully!`
+                success: `Account ${t(actionVerb === 'activate' ? 'toggle.activate' : 'toggle.deactivate').toLowerCase()}d successfully!`
             }));
             fetchAccounts();
         } catch (error) {
             console.error('Status change error:', error);
             setData(prev => ({
                 ...prev,
-                error: error.response?.data?.message || `Failed to ${action} account`,
+                error: error.response?.data?.message || `Failed to ${actionVerb} account`,
                 success: null
             }));
         }
@@ -133,12 +135,12 @@ const AccountList = () => {
 
     const columns = useMemo(() => [
         { 
-            Header: 'Link', 
+            Header: t('table.account.link'), 
             accessor: 'link',
             Cell: ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{value}</a>
         },
         { 
-            Header: 'Description', 
+            Header: t('table.account.description'), 
             accessor: 'description',
             Cell: ({ value }) => value || '-'
         },
@@ -148,7 +150,7 @@ const AccountList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('createdAt')}
                 >
-                    Created At {sortField === 'createdAt' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {t('table.account.created_at')} {sortField === 'createdAt' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </span>
             ), 
             accessor: 'createdAt',
@@ -160,7 +162,7 @@ const AccountList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('changedAt')}
                 >
-                    Updated At {sortField === 'changedAt' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {t('table.account.updated_at')} {sortField === 'changedAt' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </span>
             ), 
             accessor: 'changedAt',
@@ -172,27 +174,32 @@ const AccountList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('login')}
                 >
-                    Login {sortField === 'login' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {t('table.account.login')} {sortField === 'login' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </span>
             ), 
             accessor: 'login' 
         },
         { 
-            Header: 'Email', 
+            Header: t('table.account.email'), 
             accessor: 'email',
             Cell: ({ value }) => <a href={`mailto:${value}`}>{value}</a>
         },
         { 
-            Header: 'Status', 
+            Header: t('table.account.password'), 
+            accessor: 'password',
+            Cell: ({ value }) => value || '-'
+        },
+        { 
+            Header: t('table.account.status'), 
             accessor: 'active',
             Cell: ({ value }) => (
                 <span className={`badge ${value ? 'bg-success' : 'bg-secondary'}`}>
-                    {value ? 'Active' : 'Inactive'}
+                    {value ? t('common.status_active') : t('common.status_inactive')}
                 </span>
             )
         },
         {
-            Header: 'Actions',
+            Header: t('table.accounts.actions'),
             accessor: 'actions',
             Cell: ({ row }) => (
                 <div className="actions-container">
@@ -200,19 +207,19 @@ const AccountList = () => {
                         onClick={() => navigate(`/edit-account/${row.original.id}`)}
                         className="action-btn btn-edit"
                     >
-                        Edit
+                        {t('button.edit')}
                     </button>
                     <button 
                         onClick={() => toggleAccountStatus(row.original.id, row.original.active)}
                         className={`action-btn ${row.original.active ? 'btn-deactivate' : 'btn-activate'}`}
                     >
-                        {row.original.active ? 'Deactivate' : 'Activate'}
+                        {row.original.active ? t('toggle.deactivate') : t('toggle.activate')}
                     </button>
                     <button
                         onClick={() => removeAccount(row.original.id)}
                         className="action-btn btn-delete"
                     >
-                        Delete
+                        {t('button.delete')}
                     </button>    
                 </div>
             )
@@ -234,12 +241,12 @@ const AccountList = () => {
         <div className="container mt-4">
             <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                    <h3>Accounts Management</h3>
+                    <h3>{t('common.accounts_list')}</h3>
                     <button 
                         onClick={() => navigate('/add-account')}
                         className="btn btn-primary"
                     >
-                        Add New Account
+                        {t('button.add_account')}
                     </button>
                 </div>
                 
@@ -257,7 +264,7 @@ const AccountList = () => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search by link or description..."
+                                    placeholder={t('help.search_panel')}
                                     value={keyword}
                                     onChange={(e) => setKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && fetchAccounts()}
@@ -269,7 +276,7 @@ const AccountList = () => {
                                         fetchAccounts();
                                     }}
                                 >
-                                    Search
+                                    {t('button.search')}
                                 </button>
                             </div>
                         </div>
@@ -281,21 +288,21 @@ const AccountList = () => {
                                         className={`btn ${activeFilter === null ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(null)}
                                     >
-                                        All
+                                        {t('toggle.all')}
                                     </button>
                                     <button
                                         type="button"
                                         className={`btn ${activeFilter === true ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(true)}
                                     >
-                                        Active
+                                        {t('toggle.active')}
                                     </button>
                                     <button
                                         type="button"
                                         className={`btn ${activeFilter === false ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(false)}
                                     >
-                                        Inactive
+                                        {t('toggle.inactive')}
                                     </button>
                                 </div>
                             </div>
@@ -343,7 +350,7 @@ const AccountList = () => {
                                 }}
                             >
                                 {[5, 10, 20, 50].map(size => (
-                                    <option key={size} value={size}>{size} per page</option>
+                                    <option key={size} value={size}>{size} {t('common.status_active')}</option>
                                 ))}
                             </select>
                         </div>
