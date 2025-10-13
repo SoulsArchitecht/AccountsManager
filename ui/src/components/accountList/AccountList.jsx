@@ -199,7 +199,7 @@ const AccountList = () => {
             )
         },
         {
-            Header: t('table.accounts.actions'),
+            Header: t('table.account.actions'),
             accessor: 'actions',
             Cell: ({ row }) => (
                 <div className="actions-container">
@@ -234,7 +234,7 @@ const AccountList = () => {
         prepareRow,
     } = useTable({ columns, data: data.accounts });
 
-    if (data.loading) return <div className="text-center mt-4">Loading...</div>;
+    if (data.loading) return <div className="text-center mt-4">{t('common.loading')}</div>;
     if (data.error) return <div className="alert alert-danger">{data.error}</div>;
 
     return (
@@ -350,7 +350,7 @@ const AccountList = () => {
                                 }}
                             >
                                 {[5, 10, 20, 50].map(size => (
-                                    <option key={size} value={size}>{size} {t('common.status_active')}</option>
+                                    <option key={size} value={size}>{size} {t('common.per_page')}</option>
                                 ))}
                             </select>
                         </div>
