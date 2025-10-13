@@ -3,6 +3,7 @@ import {createAccount, getAccount, updateAccount} from '../../services/AccountSe
 import {useNavigate, useParams} from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import * as Const from '../../common/Const';
+import { useLocalization } from '../../context/LocalizationContext';
 
 const AddAccount = () => {
 
@@ -20,6 +21,7 @@ const AddAccount = () => {
     const [nickName, setNickName] = useState('');
     const [active, setActive] = useState(true);
     const [userId, setUserId] = useState(2);
+    const { t } = useLocalization();
 
     //const {id} = useParams();
     console.log(id);
@@ -92,28 +94,28 @@ const AddAccount = () => {
         if (link.match(Const.REGEX_LINK)) {
             errorsCopy.link = '';
         } else if (isEmpty(link) || !link.match(Const.REGEX_LINK)) {
-            errorsCopy.link = 'Link is invalid or blank';
+            errorsCopy.link = t('add_form.link.error');
             valid = false;
         }
 
         if (login.length >= 3) {
             errorsCopy.login = '';
         } else {
-            errorsCopy.login = 'Login is required';
+            errorsCopy.login = t('add_form.login.error');
             valid = false;
         }
 
         if (password.length >= 8) {
             errorsCopy.password = '';
         } else {
-            errorsCopy.password = 'Password length is shoter than 8 or password is blank';
+            errorsCopy.password = t('add_form.password.error');
             valid = false;
         }
 
         if (email.match(Const.REGEX_EMAIL)) {
             errorsCopy.email = '';
         } else {
-            errorsCopy.email = 'Email is invalid or blank';
+            errorsCopy.email = t('add_form.email.error');
             valid = false;
         }
 
@@ -122,7 +124,7 @@ const AddAccount = () => {
         } else if (emailAnother.match(Const.REGEX_EMAIL)){
             errorsCopy.emailAnother = '';
         } else {
-            errorsCopy.emailAnother ='Email is invalid';
+            errorsCopy.emailAnother = t('add_form.opt_email.error');
             valid = false;
         }
 
@@ -133,9 +135,9 @@ const AddAccount = () => {
 
     function pageTitle() {
         if(id) {
-            return <h2 className='text-center'>Update account</h2>;
+            return <h2 className='text-center'>{t('add_form.action_update')}</h2>;
         } else {
-            return <h2 className='text-center'>Add account</h2>
+            return <h2 className='text-center'>{t('add_form.action_add')}</h2>
         }
     }
 
@@ -151,10 +153,10 @@ const AddAccount = () => {
                 <form>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Link:</label>
+                        <label className='form-label fw-bold'>{t('add_form.link')}</label>
                         <input
                         type='text'
-                        placeholder='Enter account or resource link'
+                        placeholder= {t('add_form.link.help')}
                         name='link'
                         value={link}
                         className={`form-control ${errors.link ? 'is-invalid' : ''}`}
@@ -165,10 +167,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Description:</label>
+                        <label className='form-label fw-bold'>{t('add_form.description')}</label>
                         <input
                         type='text'
-                        placeholder='Enter description'
+                        placeholder={t('add_form.description.help')}
                         name='description'
                         value={description}
                         className='form-control'
@@ -178,10 +180,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Login:</label>
+                        <label className='form-label fw-bold'>{t('add_form.login')}</label>
                         <input
                         type='text'
-                        placeholder='Enter your login'
+                        placeholder={t('add_form.login.help')}
                         name='login'
                         value={login}
                         className={`form-control ${errors.login ? 'is-invalid' : ''}`}
@@ -192,10 +194,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Password:</label>
+                        <label className='form-label fw-bold'>{t('add_form.password')}</label>
                         <input
                         type='text'
-                        placeholder='Enter your password'
+                        placeholder={t('add_form.password.help')}
                         name='password'
                         value={password}
                         className={`form-control ${errors.password ? 'is-invalid' : ''}`}
@@ -206,10 +208,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Email:</label>
+                        <label className='form-label fw-bold'>{t('add_form.email')}</label>
                         <input
                         type='text'
-                        placeholder='Enter your email'
+                        placeholder={t('add_form.email.help')}
                         name='email'
                         value={email}
                         className={`form-control ${errors.email ? 'is-invalid' : ''}`}
@@ -220,10 +222,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2 fw-bold'>
-                        <label className='form-label'>Another Email:</label>
+                        <label className='form-label'>{t('add_form.opt_email')}</label>
                         <input
                         type='text'
-                        placeholder='Enter your another email if you have it'
+                        placeholder={t('add_form.opt_email.help')}
                         name='emailAnother'
                         value={emailAnother}
                         className={`form-control ${errors.emailAnother ? 'is-invalid' : ''}`}
@@ -234,10 +236,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>Nickname:</label>
+                        <label className='form-label fw-bold'>{t('add_form.nickname')}</label>
                         <input
                         type='text'
-                        placeholder='Enter your nickname if resource need it'
+                        placeholder={t('add_form.nickname.help')}
                         name='nickName'
                         value={nickName}
                         className='form-control'
@@ -247,8 +249,8 @@ const AddAccount = () => {
                     </div>
                     
 
-                    <button className='btn btn-success' onClick={saveOrUpdateAccount}>Submit</button>
-                    <button className='btn btn-danger pr-2'>Clear</button>
+                    <button className='btn btn-success' onClick={saveOrUpdateAccount}>{t('add_form.button.submit')}</button>
+                    <button className='btn btn-danger pr-2'>{t('add_form.button.clear')}</button>
                 </form>
             </div>
         </div>
