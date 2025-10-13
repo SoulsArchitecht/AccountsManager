@@ -6,11 +6,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 import './UserInfo.css';
+import { useLocalization } from '../../context/LocalizationContext';
 
 const UserInfo = () => {
   const { user, updateUserInfo } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const { t } = useLocalization();
 
   const { register, handleSubmit, reset, formState: { errors }, control } = useForm();
 
@@ -45,9 +47,9 @@ const UserInfo = () => {
 
     try {
       await uploadAvatar(file);
-      toast.success('Avatar uploaded successfully');
+      toast.success(t('user_info.avatar.success'));
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to upload avatar');
+      toast.error(error.response?.data?.message || t('user_info.avatar.error'));
     }
   };
 
@@ -58,26 +60,26 @@ const UserInfo = () => {
         phoneNumber: formData.phone, 
         birthDate: formData.birthDate?.toISOString().split('T')[0]
       });
-      toast.success('Profile updated successfully');
+      toast.success(t('user_info.profile.success'));
       setIsEditing(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update profile');
+      toast.error(error.response?.data?.message || t('user_info.profile.error'));
     }
   };
 
-  if (!user || !user.userInfo) return <div className="text-center mt-4">Loading...</div>;
+  if (!user || !user.userInfo) return <div className="text-center mt-4">{t('common.loading')}</div>;
 
   return (
     <div className="container mt-4">
       <div className="card">
         <div className="card-header d-flex justify-content-between align-items-center">
-          <h3 className="mb-0">User Profile</h3>
+          <h3 className="mb-0">{t('user_info.title')}</h3>
           {!isEditing && (
             <button
               className="btn btn-primary btn-sm"
               onClick={() => setIsEditing(true)}
             >
-              Edit Profile
+              {t('user_info.button.edit')}
             </button>
           )}
         </div>
@@ -103,7 +105,7 @@ const UserInfo = () => {
                       className="form-control-file d-none"
                     />
                     <label htmlFor="avatar" className="btn btn-outline-secondary btn-sm">
-                      Change Avatar
+                      {t('user_info.button.change_avatar')}
                     </label>
                   </div>
                 )}
@@ -112,7 +114,7 @@ const UserInfo = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">First Name</label>
+                      <label className="form-label">{t('table.user_info.first_name')}</label>
                       {isEditing ? (
                         <input
                           {...register('firstName')}
@@ -125,7 +127,7 @@ const UserInfo = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Last Name</label>
+                      <label className="form-label">{t('table.user_info.last_name')}</label>
                       {isEditing ? (
                         <input
                           {...register('lastName')}
@@ -140,13 +142,13 @@ const UserInfo = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Main Email</label>
+                      <label className="form-label">{t('table.user_info.main_email')}</label>
                       <div className="form-control-static text-muted">{user.email}</div>
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Additional Email</label>
+                      <label className="form-label">{t('table.user_info.additional_email')}</label>
                       {isEditing ? (
                         <input
                           type="email"
@@ -162,7 +164,7 @@ const UserInfo = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Birth Date</label>
+                      <label className="form-label">{t('table.user_info.birthdate')}</label>
                       {isEditing ? (
                         <Controller
                           name="birthDate"
@@ -192,7 +194,7 @@ const UserInfo = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Registration Date</label>
+                      <label className="form-label">{t('table.user_info.registration_date')}</label>
                       <div className="form-control-static">
                         {new Date(user.userInfo.registrationDate).toLocaleDateString()}
                       </div>
@@ -202,7 +204,7 @@ const UserInfo = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Phone</label>
+                      <label className="form-label">{t('table.user_info.phone')}</label>
                       {isEditing ? (
                         <input
                           {...register('phone')}
@@ -215,7 +217,7 @@ const UserInfo = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="form-group mb-3">
-                      <label className="form-label">Country</label>
+                      <label className="form-label">{t('table.user_info.country')}</label>
                       {isEditing ? (
                         <input
                           {...register('country')}
@@ -237,10 +239,10 @@ const UserInfo = () => {
                         reset();
                       }}
                     >
-                      Cancel
+                      {t('user_info.button.cancel')}
                     </button>
                     <button type="submit" className="btn btn-primary btn-sm">
-                      Save Changes
+                      {t('user_info.button.save_changes')}
                     </button>
                   </div>
                 )}

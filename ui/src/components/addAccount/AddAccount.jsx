@@ -167,10 +167,10 @@ const AddAccount = () => {
                     </div>
 
                     <div className='form-group mb-2'>
-                        <label className='form-label fw-bold'>{t('add_form.description')}</label>
+                        <label className='form-label fw-bold'>{t('add_form.desc')}</label>
                         <input
                         type='text'
-                        placeholder={t('add_form.description.help')}
+                        placeholder={t('add_form.desc.help')}
                         name='description'
                         value={description}
                         className='form-control'
