@@ -35,12 +35,12 @@ const Header = () => {
               <span className="ms-1">{t('nav.add')}</span>
             </Link>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link to="/accounts/search" className="nav-link d-flex align-items-center">
               <FaSearch className="me-1" />
               <span className="ms-1">{t('nav.search')}</span>
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item">
                 <Link to={"/"} className="nav-link">
                   <FaHome className="me-1" />
@@ -51,7 +51,7 @@ const Header = () => {
             <li className="nav-item">
               <Link to="/users" className="nav-link d-flex align-items-center">
                 <FaUsers className="me-1" />
-                <span className="ms-1">Users</span>
+                <span className="ms-1">{t('nav.users')}</span>
               </Link>
             </li>
           )}
