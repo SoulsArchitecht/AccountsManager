@@ -7,6 +7,7 @@ import Pagination from '@mui/material/Pagination';
 import { useAuth } from '../../authContext/AuthContext';
 import Unauthorized from '../../common/Unauthorized';
 import '../userList/UserList.css'
+import { useLocalization } from '../../context/LocalizationContext';
 
 
 const UserList = () => {
@@ -26,8 +27,8 @@ const UserList = () => {
     const [sortDirection, setSortDirection] = useState('desc');
     const { user, token } = useAuth();
     const navigate = useNavigate();
+    const { t } = useLocalization();
 
-    // Проверка на роль ADMIN
     const isAdmin = user?.role === 'ROLE_ADMIN';
 
     const fetchUsers = useCallback(async () => {
@@ -60,7 +61,7 @@ const UserList = () => {
                 totalPages: 0,
                 totalElements: 0,
                 loading: false,
-                error: error.response?.data?.message || 'Failed to fetch users',
+                error: error.response?.data?.message || t('table.user.load.error'),
                 success: null
             });
             console.error('Error fetching users:', error);
@@ -83,13 +84,13 @@ const UserList = () => {
     };
 
     const removeUser = async (id) => {
-        if (window.confirm(`Are you sure to delete this user?`)) {
+        if (window.confirm(t('table.user.delete.confirm'))) {
             deleteUser(id)
                 .then(() => {
                     setData(prev => ({
                         ...prev,
                         error: null,
-                        success: 'User deleted successfully'
+                        success: t('table.user.delete.success')
                     }));
                     fetchUsers();
                 })
@@ -97,7 +98,7 @@ const UserList = () => {
                     console.error('Delete error: ', error);
                     setData(prev => ({
                         ...prev,
-                        error: error.response?.data?.message || 'Failed to delete user',
+                        error: error.response?.data?.message || t('table.user.delete.error'),
                         success: null
                     }));
                 });
@@ -145,7 +146,7 @@ const UserList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('email')}
                 >
-                    Email {sortField === 'email' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {t('table.user.email')} {sortField === 'email' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </span>
             ), 
             accessor: 'email' 
@@ -156,13 +157,13 @@ const UserList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('login')}
                 >
-                    Login {sortField === 'login' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {t('table.user.nickname')} {sortField === 'login' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </span>
             ), 
             accessor: 'login' 
         },
         { 
-            Header: 'Role', 
+            Header: t('table.user.role'), 
             accessor: 'role',
             Cell: ({ value }) => value?.replace('ROLE_', '')
         },
@@ -176,7 +177,7 @@ const UserList = () => {
             )
         },
         {
-            Header: 'Actions',
+            Header: t('table.user.actions'),
             accessor: 'actions',
             Cell: ({ row }) => (
                 <div className="actions-container">
@@ -184,7 +185,7 @@ const UserList = () => {
                         onClick={() => navigate(`/edit-user/${row.original.id}`)}
                         className="action-btn btn-edit"
                     >
-                        Edit
+                        {t('table.user.button.edit')}
                     </button>
                     <button
                         onClick= { () => toggleUserStatus(row.original.id, row.original.status)}
@@ -196,7 +197,7 @@ const UserList = () => {
                         onClick={() => removeUser(row.original.id)}
                         className="action-btn btn-delete"
                     >
-                        Delete
+                        {t('table.user.button.delete')}
                     </button>
                 </div>
             )
@@ -218,19 +219,19 @@ const UserList = () => {
         />;
     }
 
-    if (data.loading) return <div className="text-center mt-4">Loading users...</div>;
+    if (data.loading) return <div className="text-center mt-4">{t('commmon.loading')}</div>;
     if (data.error) return <div className="alert alert-danger">{data.error}</div>;
 
     return (
         <div className="container mt-4">
             <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                    <h3>User Management</h3>
+                    <h3>{t('table.user.title')}</h3>
                     <button 
                         onClick={() => navigate('/add-user')}
                         className="btn btn-primary"
                     >
-                        Add New User
+                        {t('table.user.button.add')}
                     </button>
                 </div>
                 
@@ -248,7 +249,7 @@ const UserList = () => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search by email or login..."
+                                    placeholder={t('table.user.search.help')}
                                     value={keyword}
                                     onChange={(e) => setKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && fetchUsers()}
@@ -260,7 +261,7 @@ const UserList = () => {
                                         fetchUsers();
                                     }}
                                 >
-                                    Search
+                                    {t('table.user.button.search')}
                                 </button>
                             </div>
                         </div>
@@ -272,21 +273,21 @@ const UserList = () => {
                                         className={`btn ${statusFilter === null ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(null)}
                                     >
-                                        All
+                                        {t('toggle.all')}
                                     </button>
                                     <button
                                         type="button"
                                         className={`btn ${statusFilter === true ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(true)}
                                     >
-                                        Active
+                                        {t('toggle.active')}
                                     </button>
                                     <button
                                         type="button"
                                         className={`btn ${statusFilter === false ? 'btn-primary' : 'btn-outline-primary'}`}
                                         onClick={() => handleStatusFilterChange(false)}
                                     >
-                                        Inactive
+                                        {t('toggle.inactive')}
                                     </button>
                                 </div>
                             </div>
@@ -334,7 +335,7 @@ const UserList = () => {
                                 }}
                             >
                                 {[5, 10, 20, 50].map(size => (
-                                    <option key={size} value={size}>{size} per page</option>
+                                    <option key={size} value={size}>{size} {t('common.per_page')}</option>
                                 ))}
                             </select>
                         </div>

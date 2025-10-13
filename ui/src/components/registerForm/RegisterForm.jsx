@@ -74,7 +74,7 @@ const RegisterForm = () => {
                   <div className="mt-3 text-center">
                     {t('help.already_registered')}{' '}
                     <button className="btn btn-link p-0" onClick={() => navigate('/login')}>
-                      Login
+                      {t('auth.sign_in')}
                     </button>
                   </div>
                 </div>
