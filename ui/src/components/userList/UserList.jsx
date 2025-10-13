@@ -168,7 +168,7 @@ const UserList = () => {
             Cell: ({ value }) => value?.replace('ROLE_', '')
         },
         { 
-            Header: 'Status', 
+            Header: t('table.user.status'), 
             accessor: 'status',
             Cell: ({ value }) => (
                 <span className={`badge ${value ? 'bg-success' : 'bg-secondary'}`}>
@@ -191,7 +191,7 @@ const UserList = () => {
                         onClick= { () => toggleUserStatus(row.original.id, row.original.status)}
                         className={`action-btn ${row.original.status ? 'btn-deactivate' : 'btn-activate'}`}
                     >
-                        {row.original.status ? 'Deactivate' : 'Activate'}    
+                        {row.original.status ? t('table.user.button.deactivate') : t('table.user.button.activate')}    
                     </button>
                     <button 
                         onClick={() => removeUser(row.original.id)}
