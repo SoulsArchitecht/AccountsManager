@@ -21,30 +21,34 @@ function App() {
     <div className="container-xxl">
       <BrowserRouter>
         <AuthProvider>
-          <Header/>
-          {/* <HomePage/> */}
-          {/* <SearchPanel/> */}
-            <Routes>
-              {/* Public routes */}
-              <Route element={<PublicRoute />}>
-                <Route path="/login" element={<LoginForm />} />
-                <Route path="/register" element={<RegisterForm />} />
-              </Route>
+          <div className="app-container">
+            <Header/>
+              <div className='central-content'>
+              {/* <HomePage/> */}
+              {/* <SearchPanel/> */}
+                <Routes>
+                  {/* Public routes */}
+                  <Route element={<PublicRoute />}>
+                    <Route path="/login" element={<LoginForm />} />
+                    <Route path="/register" element={<RegisterForm />} />
+                  </Route>
 
-              {/* Private routes */}
-              <Route element={<PrivateRoute />}>
-                <Route path='/accounts/search' element={<SearchPanel />} />
-                <Route path='/accounts' element={<AccountList />} />
-                <Route path='/add-account' element={<AddAccount />} />
-                <Route path='/edit-account/:id' element={<AddAccount />} />
-                <Route path='/users' element={<UserList />} />
-                <Route path='/settings' element={<UserInfo/>} />
-              </Route>
+                  {/* Private routes */}
+                  <Route element={<PrivateRoute />}>
+                    <Route path='/accounts/search' element={<SearchPanel />} />
+                    <Route path='/accounts' element={<AccountList />} />
+                    <Route path='/add-account' element={<AddAccount />} />
+                    <Route path='/edit-account/:id' element={<AddAccount />} />
+                    <Route path='/users' element={<UserList />} />
+                    <Route path='/settings' element={<UserInfo/>} />
+                  </Route>
 
-              {/* Common routes */}
-              <Route path='/' element={<HomePage />} />
-            </Routes>
-          <Footer/>
+                  {/* Common routes */}
+                <Route path='/' element={<HomePage />} />
+              </Routes>
+              </div>
+            <Footer/>
+          </div>
         </AuthProvider>
       </BrowserRouter>
       <ToastContainer
