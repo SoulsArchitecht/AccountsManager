@@ -11,6 +11,51 @@ body {
   background-color: #f9fafb;
 }
 
+/* Общий контейнер */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-container {
+  background-color: #b66d14; 
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 1000px; 
+  height: 650px; 
+  overflow-y: auto; /* scroll*/
+  padding: 1.5rem;
+  margin: 1.5rem 0; 
+  box-sizing: border-box;
+}
+
+.beige-background {
+  background-color: #fdf6ee; 
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  padding: 2rem 0; 
+}
+
+.central-content {
+  width: 100%;
+  max-width: 1200px;
+  background-color:#faefe3;
+  height: 650px;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
 /* CONTAINER FOR CENTERING AND LIMITING */
 .container {
   width: 100%;

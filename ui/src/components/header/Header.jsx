@@ -60,15 +60,6 @@ const Header = () => {
 
         {/* Правые элементы */}
         <div className="navbar-nav ms-auto d-flex align-items-center">
-          <button
-            onClick={switchLanguage}
-            className="btn btn-sm btn-outline-light d-flex align-items-center me-2"
-            title={currentLang === 'en' ? 'Switch to Russian' : 'Switch to English'}
-            aria-label="Switch language"
-          >
-            <FaGlobe className="me-1" />
-            {currentLang === 'en' ? 'EN' : 'RU'}
-          </button>
 
           {token ? (
             <>
@@ -111,6 +102,16 @@ const Header = () => {
               </Link>
             </li>
           )}
+
+          <button
+            onClick={switchLanguage}
+            className="btn btn-sm btn-outline-light d-flex align-items-center me-2"
+            title={currentLang === 'en' ? 'Switch to Russian' : 'Switch to English'}
+            aria-label="Switch language"
+          >
+            <FaGlobe className="me-1" />
+            {currentLang === 'en' ? 'EN' : 'RU'}
+          </button>
         </div>
       </div>
     </nav>
