@@ -1,35 +1,92 @@
-.home-page {
-    width: 100%;
-    padding: 16px 0;
+.home-hero {
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('../../assets/images/main_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
-.home-image-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+.home-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* отступы на мобильных */
 }
 
-.home-image {
-    max-width: 100%;
-    height: auto;
-    width: 80%; /* по умолчанию — 80% ширины */
-    max-width: 600px; /* не растягивать больше 600px */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.home-content {
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.home-description {
+  font-size: 1.4rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.home-link {
+  font-size: 1.2rem;
+  color: #4da6ff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 2px solid #4da6ff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  text-align: center;
+}
+
+.home-link:hover {
+  background: rgba(77, 166, 255, 0.2);
+  color: #e0f0ff;
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-    .home-image {
-        width: 90%; /* чуть шире на планшетах */
-        max-width: 400px;
-    }
+  .home-hero {
+    min-height: auto;
+    padding: 60px 0;
+  }
+
+  .home-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .home-link {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border-radius: 6px;
+  }
 }
 
 @media (max-width: 480px) {
-    .home-image {
-        width: 95%; /* почти на всю ширину на смартфонах */
-        max-width: 320px;
-        border-radius: 6px;
-    }
+  .home-hero {
+    padding: 40px 0;
+  }
+
+  .home-description {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .home-link {
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 280px;
+  }
 }
