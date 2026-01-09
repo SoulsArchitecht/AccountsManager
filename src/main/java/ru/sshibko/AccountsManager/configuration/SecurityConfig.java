@@ -28,7 +28,7 @@ import ru.sshibko.AccountsManager.security.JwtAuthenticationFilter;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -53,6 +53,12 @@ public class SecurityConfig {
                         .requestMatchers("/app-info").permitAll()
                         .requestMatchers("/localization/messages").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/uploads/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configurer -> configurer
