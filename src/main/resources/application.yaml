@@ -51,6 +51,9 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.sql: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+    org.springdoc: TRACE
+    io.swagger: DEBUG
+    com.fasterxml.jackson.databind: DEBUG
 
 file:
   upload-dir: /app/uploads
