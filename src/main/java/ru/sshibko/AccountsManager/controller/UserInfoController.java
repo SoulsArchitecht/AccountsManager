@@ -16,7 +16,7 @@ import ru.sshibko.AccountsManager.service.UserInfoService;
 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
-@RequestMapping("/users/info")
+@RequestMapping(value = "/users/info", produces = "application/json")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "UserInfo", description = "User Info Management API")

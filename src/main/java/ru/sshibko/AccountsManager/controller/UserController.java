@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.sshibko.AccountsManager.dto.AccountDto;
 import ru.sshibko.AccountsManager.dto.UserDto;
 import ru.sshibko.AccountsManager.service.UserService;
 
@@ -16,7 +15,7 @@ import java.util.Collection;
 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
-@RequestMapping("/users")
+@RequestMapping(value = "/users", produces = "application/json")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Users", description = "User Management API")
@@ -30,29 +29,6 @@ public class UserController {
     public UserDto getUserById(@PathVariable("id") Long id) {
         return userService.getById(id);
     }
-
-/*    @GetMapping()
-    @Operation(summary = "get all users for ADMIN only")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PagedDataDto<User> getAllAccountPaged(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-
-        Page<User> pagedData = userService.findAllUsersPaged(keyword, PageRequest.of(page, size));
-
-        PagedDataDto<User> pagedDataDto = new PagedDataDto<>();
-        pagedDataDto.setData(pagedData.getContent());
-        pagedDataDto.setTotal(pagedData.getTotalPages());
-
-        return pagedDataDto;
-    }*/
-
-/*    @GetMapping()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Page<UserDto> getAllUsersPaged(Pageable pageable) {
-        return userService.findAllUsersPaged(pageable);
-    }*/
 
     @GetMapping("/")
     @Operation(summary = "Getting all users paged with keyword for ADMIN ")

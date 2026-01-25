@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 @OpenAPIDefinition()
@@ -27,7 +30,11 @@ public class OpenApiConfig {
                         .version("1.0")
                         .contact(new Contact()
                                 .name("Shibko Serge")
-                                .email("sshibkodev@gmail.com")));
+                                .email("sshibkodev@gmail.com")))
+                .servers(
+                    List.of(new Server().url("https://myacc.shibko-soft.ru")
+                            .description("Serge Account Management System API Documentation"))
+                );
 
     }
 }
