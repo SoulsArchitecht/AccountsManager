@@ -1,5 +1,6 @@
 package ru.sshibko.AccountsManager.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Localization API", description = "Localization for multilanguage API")
 public class LocalizationController {
 
     private final LocalizationService localizationService;
